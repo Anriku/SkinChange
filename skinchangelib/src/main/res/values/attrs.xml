@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SCBackgroundHelper">
+        <attr name="android:background" />
+    </declare-styleable>
+
+    <declare-styleable name="SCImageHelper">
+        <attr name="android:src" />
+    </declare-styleable>
+
+    <declare-styleable name="SCCompoundDrawablesHelper">
+        <attr name="android:drawableLeft" />
+        <attr name="android:drawableRight" />
+        <attr name="android:drawableTop" />
+        <attr name="android:drawableBottom" />
+    </declare-styleable>
+</resources>

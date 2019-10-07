@@ -1,0 +1,28 @@
+plugins {
+    id 'groovy'
+    // maven插件用于将上传插件，这里我们进行的是本地插件的部署
+    id 'maven'
+    id 'java'
+}
+
+// 插件的classpath将会由下面的参数决定。下面组成的classpath将是com.anriku:standaloneplugin:1.0
+group 'com.anriku'
+version '1.0'
+archivesBaseName = 'skinchangeplugin'
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation group: 'org.ow2.asm', name: 'asm', version: '6.0'
+    implementation group: 'org.ow2.asm', name: 'asm-commons', version: '6.0'
+    implementation 'com.android.tools.build:gradle:3.2.1'
+}
+// maven预定的发布插件的Task
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://$projectDir/../repo")
+        }
+    }
+}
