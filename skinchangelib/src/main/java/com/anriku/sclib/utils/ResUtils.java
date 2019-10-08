@@ -31,6 +31,17 @@ public class ResUtils {
         editor.apply();
     }
 
+    public static int getNewDrawableOrColorResId(Context context, int resId) {
+        int newResId = resId;
+        int type = DrawableTypeUtils.getIdType(context, resId);
+        if (type == DrawableTypeUtils.TYPE_COLOR) {
+            newResId = ResUtils.getNewColorResId(resId);
+        } else if (type == DrawableTypeUtils.TYPE_DRAWABLE) {
+            newResId = ResUtils.getNewDrawableResId(resId);
+        }
+        return newResId;
+    }
+
     public static int getNewDrawableResId(int resId) {
         return resId;
     }
@@ -40,6 +51,10 @@ public class ResUtils {
     }
 
     public static int getNewStringResId(int resId) {
+        return resId;
+    }
+
+    public static int getNewStyleResId(int resId) {
         return resId;
     }
 

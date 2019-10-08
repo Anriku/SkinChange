@@ -45,6 +45,9 @@ class CustomTransform extends Transform {
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         Collection<TransformInput> inputs = transformInvocation.inputs
         TransformOutputProvider outputProvider = transformInvocation.outputProvider
+
+        SkinChangeUtils skinChangeUtils = new SkinChangeUtils()
+        DirectoryInput dInput = null
         //删除之前的输出
         if (outputProvider != null)
             outputProvider.deleteAll()
@@ -52,15 +55,20 @@ class CustomTransform extends Transform {
         inputs.each { TransformInput input ->
             //遍历directoryInputs
             input.directoryInputs.each { DirectoryInput directoryInput ->
+                dInput = directoryInput
                 //处理directoryInputs
-                SkinChangeUtils.handleDirectoryInput(directoryInput, outputProvider)
+                skinChangeUtils.handleDirectoryInput(directoryInput, outputProvider)
             }
 
             //遍历jarInputs
             input.jarInputs.each { JarInput jarInput ->
                 //处理jarInputs
-                SkinChangeUtils.handleJarInputs(jarInput, outputProvider)
+                skinChangeUtils.handleJarInputs(jarInput, outputProvider)
             }
+        }
+        // 生成RMaps系列类
+        if (dInput != null) {
+            skinChangeUtils.dumpRMapsFile(dInput, outputProvider)
         }
     }
 

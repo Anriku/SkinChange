@@ -13,5 +13,16 @@
         <attr name="android:drawableRight" />
         <attr name="android:drawableTop" />
         <attr name="android:drawableBottom" />
+
+        <attr name="android:drawableStart" />
+        <attr name="android:drawableEnd" />
+    </declare-styleable>
+
+    <declare-styleable name="SCTextAppearanceHelper">
+        <attr name="android:textAppearance" />
+    </declare-styleable>
+
+    <declare-styleable name="SCButtonHelper">
+        <attr name="android:button" />
     </declare-styleable>
 </resources>

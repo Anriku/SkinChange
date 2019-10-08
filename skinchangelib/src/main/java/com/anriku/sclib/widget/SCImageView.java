@@ -5,12 +5,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
-
 import com.anriku.sclib.annotation.SkinChangeFunction;
 import com.anriku.sclib.annotation.SkinChangeFunctionArray;
-import com.anriku.sclib.helpers.SCBackgroundColorHelper;
-import com.anriku.sclib.helpers.SCBackgroundDrawableHelper;
+import com.anriku.sclib.helpers.SCBackgroundHelper;
 import com.anriku.sclib.helpers.SCImageHelper;
 
 /**
@@ -18,31 +15,24 @@ import com.anriku.sclib.helpers.SCImageHelper;
  */
 
 @SuppressLint("AppCompatCustomView")
-@SkinChangeFunctionArray(helperClassesWholeName = {SCBackgroundDrawableHelper.class, SCBackgroundColorHelper.class,
+@SkinChangeFunctionArray(helperClassesWholeName = {SCBackgroundHelper.class,
         SCImageHelper.class})
 public class SCImageView extends ImageView {
 
     public SCImageView(Context context) {
-        super(context);
+        this(context, null);
     }
 
-    public SCImageView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+    public SCImageView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    public SCImageView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SCImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    @SkinChangeFunction(helperClassWholeName = SCBackgroundColorHelper.class,
-            parameterIndexes = {0})
-    public void setBackgroundColor(int color) {
-        super.setBackgroundColor(color);
-    }
-
-    @Override
-    @SkinChangeFunction(helperClassWholeName = SCBackgroundDrawableHelper.class,
+    @SkinChangeFunction(helperClassWholeName = SCBackgroundHelper.class,
             parameterIndexes = {0})
     public void setBackgroundResource(int resid) {
         super.setBackgroundResource(resid);

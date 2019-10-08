@@ -3,44 +3,48 @@ package com.anriku.sclib.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.AppCompatRadioButton;
 
 import com.anriku.sclib.helpers.SCBackgroundHelper;
+import com.anriku.sclib.helpers.SCButtonHelper;
 import com.anriku.sclib.helpers.SCCompoundDrawablesHelper;
 import com.anriku.sclib.helpers.SCRelativeCompoundDrawablesHelper;
 import com.anriku.sclib.helpers.SCTextAppearanceHelper;
 
 /**
- * Created by anriku on 2019-10-07.
+ * Created by anriku on 2019-10-08.
  */
 
-public class SCAppCompatTextView extends AppCompatTextView {
+public class SCAppCompatRadioButton extends AppCompatRadioButton {
 
     private final SCBackgroundHelper mSCBackgroundDrawableHelper;
     private final SCTextAppearanceHelper mSCTextAppearanceHelper;
     private final SCCompoundDrawablesHelper mSCCompoundDrawablesHelper;
     private final SCRelativeCompoundDrawablesHelper mSCRelativeCompoundDrawablesHelper;
+    private final SCButtonHelper mSCButtonHelper;
 
-    public SCAppCompatTextView(Context context) {
+    public SCAppCompatRadioButton(Context context) {
         this(context, null);
     }
 
-    public SCAppCompatTextView(Context context, AttributeSet attrs) {
-        this(context, attrs, android.R.attr.textViewStyle);
+    public SCAppCompatRadioButton(Context context, AttributeSet attrs) {
+        this(context, attrs, android.R.attr.radioButtonStyle);
     }
 
-    public SCAppCompatTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SCAppCompatRadioButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         mSCBackgroundDrawableHelper = new SCBackgroundHelper(this);
         mSCTextAppearanceHelper = new SCTextAppearanceHelper(this);
         mSCCompoundDrawablesHelper = new SCCompoundDrawablesHelper(this);
         mSCRelativeCompoundDrawablesHelper = new SCRelativeCompoundDrawablesHelper(this);
+        mSCButtonHelper = new SCButtonHelper(this);
 
         mSCBackgroundDrawableHelper.loadFromAttributes(attrs, defStyleAttr);
         mSCTextAppearanceHelper.loadFromAttributes(attrs, defStyleAttr);
         mSCCompoundDrawablesHelper.loadFromAttributes(attrs, defStyleAttr);
         mSCRelativeCompoundDrawablesHelper.loadFromAttributes(attrs, defStyleAttr);
+        mSCButtonHelper.loadFromAttributes(attrs, defStyleAttr);
     }
 
     @Override
@@ -96,5 +100,14 @@ public class SCAppCompatTextView extends AppCompatTextView {
             resId = newResIds[0];
         }
         super.setBackgroundResource(resId);
+    }
+
+    @Override
+    public void setButtonDrawable(int resId) {
+        int[] newResIds = mSCButtonHelper.recordAndReplaceResIds(new int[]{resId});
+        if (newResIds != null) {
+            resId = newResIds[0];
+        }
+        super.setButtonDrawable(resId);
     }
 }

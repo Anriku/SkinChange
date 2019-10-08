@@ -36,7 +36,7 @@ public class SCImageHelper extends SCHelper {
 
     @Override
     public int[] recordAndReplaceResIds(int[] resIds) {
-        if (resIds == null) {
+        if (resIds == null || resIds.length != 1) {
             return null;
         }
         super.recordAndReplaceResIds(resIds);
@@ -47,7 +47,7 @@ public class SCImageHelper extends SCHelper {
 
     @Override
     public void applySkinChange() {
-        if (mResIds != null) {
+        if (mResIds != null && mResIds.length == 1 && mResIds[0] != INVALID_ID && mView instanceof ImageView) {
             ((ImageView) mView).setImageResource(mResIds[0]);
         }
     }

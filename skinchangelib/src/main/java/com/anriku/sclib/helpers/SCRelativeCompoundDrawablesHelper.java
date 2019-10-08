@@ -6,15 +6,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.anriku.sclib.R;
-import com.anriku.sclib.utils.ResUtils;
 
 /**
- * Created by anriku on 2019-10-07.
+ * Created by anriku on 2019-10-08.
  */
 
-public class SCCompoundDrawablesHelper extends SCHelper {
+public class SCRelativeCompoundDrawablesHelper extends SCCompoundDrawablesHelper {
 
-    public SCCompoundDrawablesHelper(View mView) {
+    public SCRelativeCompoundDrawablesHelper(View mView) {
         super(mView);
     }
 
@@ -26,29 +25,14 @@ public class SCCompoundDrawablesHelper extends SCHelper {
         TypedArray a = mView.getContext().obtainStyledAttributes(attrs,
                 R.styleable.SCCompoundDrawablesHelper, defStyleAttr, 0);
         try {
-            mResIds[0] = a.getResourceId(R.styleable.SCCompoundDrawablesHelper_android_drawableLeft, INVALID_ID);
+            mResIds[0] = a.getResourceId(R.styleable.SCCompoundDrawablesHelper_android_drawableStart, INVALID_ID);
             mResIds[1] = a.getResourceId(R.styleable.SCCompoundDrawablesHelper_android_drawableTop, INVALID_ID);
-            mResIds[2] = a.getResourceId(R.styleable.SCCompoundDrawablesHelper_android_drawableRight, INVALID_ID);
+            mResIds[2] = a.getResourceId(R.styleable.SCCompoundDrawablesHelper_android_drawableEnd, INVALID_ID);
             mResIds[3] = a.getResourceId(R.styleable.SCCompoundDrawablesHelper_android_drawableBottom, INVALID_ID);
         } finally {
             a.recycle();
         }
         applySkinChange();
-    }
-
-    @Override
-    public int[] recordAndReplaceResIds(int[] resIds) {
-        if (resIds == null || resIds.length != 4 || mView == null) {
-            return resIds;
-        }
-        super.recordAndReplaceResIds(resIds);
-
-        int[] newBackgroundResIds = new int[resIds.length];
-        for (int i = 0; i < resIds.length; i++) {
-            newBackgroundResIds[i] = ResUtils.getNewDrawableOrColorResId(mView.getContext(), resIds[i]);
-        }
-
-        return newBackgroundResIds;
     }
 
     @Override
@@ -63,7 +47,7 @@ public class SCCompoundDrawablesHelper extends SCHelper {
                 }
             }
 
-            ((TextView) mView).setCompoundDrawablesWithIntrinsicBounds(
+            ((TextView) mView).setCompoundDrawablesRelativeWithIntrinsicBounds(
                     resIds[0],
                     resIds[1],
                     resIds[2],

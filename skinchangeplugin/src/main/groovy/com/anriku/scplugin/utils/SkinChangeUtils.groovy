@@ -5,9 +5,12 @@ import com.android.build.api.transform.Format
 import com.android.build.api.transform.JarInput
 import com.android.build.api.transform.TransformOutputProvider
 import com.android.utils.FileUtils
-import com.anriku.scplugin.dump.ResUtilsDump
+import com.anriku.scplugin.dump.RMapsDump
 import com.anriku.scplugin.extension.SkinChangeExtension
+import com.anriku.scplugin.visitor.AppCompatViewInflaterVisitor
 import com.anriku.scplugin.visitor.RModifyVisitor
+import com.anriku.scplugin.visitor.ResUtilsVisitor
+import com.anriku.scplugin.visitor.SkinChangeVisitor
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.compress.utils.IOUtils
 import org.objectweb.asm.ClassReader
@@ -21,12 +24,13 @@ import java.util.jar.JarOutputStream
 class SkinChangeUtils {
 
     public static SkinChangeExtension sSkinChangeExtension
-    private static boolean sResUtilsGenerated
+
+    private HashMap<String, HashMap<String, Integer>> mStringToIntegers = new HashMap<>()
 
     /**
      * 处理文件目录下的class文件
      */
-    static void handleDirectoryInput(DirectoryInput directoryInput, TransformOutputProvider outputProvider) {
+    void handleDirectoryInput(DirectoryInput directoryInput, TransformOutputProvider outputProvider) {
         //是否是目录
         if (directoryInput.file.isDirectory()) {
             //列出目录所有文件（包含子文件夹，子文件夹内文件）
@@ -38,28 +42,17 @@ class SkinChangeUtils {
 
                         ClassReader classReader = new ClassReader(file.bytes)
                         ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-                        ClassVisitor cv = new com.anriku.scplugin.visitor.SkinChangeVisitor(classWriter, sSkinChangeExtension.packageName)
+                        ClassVisitor cv = new SkinChangeVisitor(classWriter)
                         classReader.accept(cv, 0)
                         dumpFile(classWriter.toByteArray(), file.parentFile.absolutePath + File.separator + name)
 
                     } else if (checkRInnerClassFile(name)) {
-                        if (file.getAbsolutePath().contains(sSkinChangeExtension.packageName.replace(".", "/"))) {
-                            generateResUtils(file.parentFile.absolutePath)
-
-                            // 对R文件中的每个内部类文件的资源进行记录
-                            ClassReader classReader = new ClassReader(file.bytes)
-                            ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-                            ClassVisitor cv = new RModifyVisitor(classWriter)
-                            classReader.accept(cv, 0)
-                            dumpFile(classWriter.toByteArray(), file.parentFile.absolutePath + File.separator + name)
-
-                            // 对R文件中的每个内部类生成对应的RMaps_内部类名的工具类。
-                            int index = name.indexOf("\$")
-                            String simpleClassName = com.anriku.scplugin.dump.RMapsDump.RMAPS + name.substring(index)
-                            simpleClassName = simpleClassName.replace("\$", "_")
-                            dumpFile(com.anriku.scplugin.dump.RMapsDump.dump(sSkinChangeExtension.packageName, simpleClassName.replace(".class", ""), cv.stringToInteger),
-                                    file.parentFile.absolutePath + File.separator + simpleClassName)
-                        }
+                        // 对R文件中的每个内部类文件的资源进行记录
+                        ClassReader classReader = new ClassReader(file.bytes)
+                        ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
+                        ClassVisitor cv = new RModifyVisitor(classWriter, getStringToIntegerHashMap(name))
+                        classReader.accept(cv, 0)
+                        dumpFile(classWriter.toByteArray(), file.parentFile.absolutePath + File.separator + name)
                     }
                 }
             }
@@ -74,7 +67,7 @@ class SkinChangeUtils {
     /**
      * 处理Jar中的class文件
      */
-    static void handleJarInputs(JarInput jarInput, TransformOutputProvider outputProvider) {
+    void handleJarInputs(JarInput jarInput, TransformOutputProvider outputProvider) {
         if (jarInput.file.getAbsolutePath().endsWith(".jar")) {
             // 重名名输出文件,因为可能同名,会覆盖
             def jarName = jarInput.name
@@ -103,7 +96,23 @@ class SkinChangeUtils {
                         jarOutputStream.putNextEntry(newJarEntry)
                         ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
                         ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-                        ClassVisitor cv = new com.anriku.scplugin.visitor.SkinChangeVisitor(classWriter, sSkinChangeExtension.packageName)
+                        ClassVisitor cv = new SkinChangeVisitor(classWriter)
+                        classReader.accept(cv, 0)
+                        byte[] code = classWriter.toByteArray()
+                        jarOutputStream.write(code)
+                    } else if (checkResUtilsClass(entryName)) {
+                        jarOutputStream.putNextEntry(newJarEntry)
+                        ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
+                        ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
+                        ClassVisitor cv = new ResUtilsVisitor(classWriter)
+                        classReader.accept(cv, 0)
+                        byte[] code = classWriter.toByteArray()
+                        jarOutputStream.write(code)
+                    } else if (checkAppCompatViewInflaterClassFile(entryName)) {
+                        jarOutputStream.putNextEntry(newJarEntry)
+                        ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
+                        ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
+                        ClassVisitor cv = new AppCompatViewInflaterVisitor(classWriter)
                         classReader.accept(cv, 0)
                         byte[] code = classWriter.toByteArray()
                         jarOutputStream.write(code)
@@ -111,6 +120,14 @@ class SkinChangeUtils {
                         jarOutputStream.putNextEntry(newJarEntry)
                         jarOutputStream.write(IOUtils.toByteArray(inputStream))
                     }
+//                } else if (checkRInnerClassFile(entryName) && checkIsProjectsRFile(jarInput.file)) {
+//                    jarOutputStream.putNextEntry(newJarEntry)
+//                    ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
+//                    ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
+//                    ClassVisitor cv = new RModifyVisitor(classWriter, getStringToIntegerHashMap(entryName))
+//                    classReader.accept(cv, 0)
+//                    byte[] code = classWriter.toByteArray()
+//                    jarOutputStream.write(code)
                 } else {
                     jarOutputStream.putNextEntry(newJarEntry)
                     jarOutputStream.write(IOUtils.toByteArray(inputStream))
@@ -127,13 +144,17 @@ class SkinChangeUtils {
         }
     }
 
+    HashMap<String, Integer> getStringToIntegers() {
+        return mStringToIntegers
+    }
+
     /**
      * 将字节流写入文件
      *
      * @param bytes
      * @param outputPath
      */
-    static void dumpFile(byte[] bytes, String outputPath) {
+    void dumpFile(byte[] bytes, String outputPath) {
         FileOutputStream fos = new FileOutputStream(outputPath)
         fos.write(bytes)
         fos.close()
@@ -145,7 +166,7 @@ class SkinChangeUtils {
      * @param name
      * @return
      */
-    static boolean checkClassFile(String name) {
+    boolean checkClassFile(String name) {
         //只处理需要的class文件
         return (name.endsWith(".class"))
     }
@@ -156,7 +177,7 @@ class SkinChangeUtils {
      * @param name
      * @return
      */
-    static boolean checkViewClassFile(String name) {
+    boolean checkViewClassFile(String name) {
         return (!name.startsWith("R\$")
                 && "R.class" != name && "BuildConfig.class" != name
                 && "androidx/appcompat/widget/AppCompatImageView.class" == name)
@@ -168,23 +189,73 @@ class SkinChangeUtils {
      * @param name
      * @return
      */
-    static boolean checkRInnerClassFile(String name) {
+    boolean checkRInnerClassFile(String name) {
         return (name.startsWith("R\$") && "R.class" != name)
     }
 
-    /**
-     * 生成ResUtils工具类
-     *
-     * @param absolutePath
-     */
-    static void generateResUtils(String absolutePath) {
-        if (!sResUtilsGenerated) {
-            println "betawenbeta:generateResUtils:" + absolutePath
-            byte[] bytes = ResUtilsDump.dump(sSkinChangeExtension.packageName)
-            FileOutputStream fos = new FileOutputStream(absolutePath + File.separator + ResUtilsDump.SIMPLE_NAME + ".class")
-            fos.write(bytes)
-            fos.close()
-            sResUtilsGenerated = true
+    boolean checkAppCompatViewInflaterClassFile(String name) {
+        if (name == null) {
+            return false
         }
+        return name.contains("AppCompatViewInflater")
     }
+
+    /**
+     * 判断该R文件是否是项目模块的R文件
+     */
+    boolean checkIsProjectsRFile(File file) {
+        String[] projects = sSkinChangeExtension.projects
+        if (projects == null) {
+            return false
+        }
+        String path = file.getAbsolutePath()
+        projects.each { project ->
+            if (path.contains(project)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    boolean checkResUtilsClass(String name) {
+        if (name == "com/anriku/sclib/utils/ResUtils.class") {
+            return true
+        }
+        return false
+    }
+
+    private HashMap<String, Integer> getStringToIntegerHashMap(String name) {
+        int index = name.indexOf("\$")
+        String simpleClassName = RMapsDump.RMAPS + name.substring(index)
+        simpleClassName = simpleClassName.replace("\$", "_")
+        if (mStringToIntegers.get(simpleClassName) == null) {
+            mStringToIntegers.put(simpleClassName, new HashMap<String, Integer>())
+        }
+        return mStringToIntegers.get(simpleClassName)
+    }
+
+    /**
+     * 为不同的资源生成对应的RMaps类
+     *
+     * @param directoryInput
+     * @param outputProvider
+     */
+    void dumpRMapsFile(DirectoryInput directoryInput, TransformOutputProvider outputProvider) {
+        String rmapsPath = directoryInput.file.getAbsolutePath() + File.separator + RMapsDump.RMAPS_PACKAGE.replace(".", File.separator)
+        File rmapsFile = new File(rmapsPath)
+        if (!rmapsFile.exists()) {
+            rmapsFile.mkdirs()
+        }
+
+        mStringToIntegers.each { stringToInteger ->
+            dumpFile(RMapsDump.dump(RMapsDump.RMAPS_PACKAGE,
+                    stringToInteger.key.replace(".class", ""), stringToInteger.value),
+                    rmapsPath + File.separator + stringToInteger.key)
+        }
+        def dest = outputProvider.getContentLocation(directoryInput.name,
+                directoryInput.contentTypes, directoryInput.scopes,
+                Format.DIRECTORY)
+        FileUtils.copyDirectory(directoryInput.file, dest)
+    }
+
 }

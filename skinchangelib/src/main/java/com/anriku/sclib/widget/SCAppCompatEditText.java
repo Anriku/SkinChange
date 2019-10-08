@@ -3,7 +3,7 @@ package com.anriku.sclib.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.AppCompatEditText;
 
 import com.anriku.sclib.helpers.SCBackgroundHelper;
 import com.anriku.sclib.helpers.SCCompoundDrawablesHelper;
@@ -11,33 +11,33 @@ import com.anriku.sclib.helpers.SCRelativeCompoundDrawablesHelper;
 import com.anriku.sclib.helpers.SCTextAppearanceHelper;
 
 /**
- * Created by anriku on 2019-10-07.
+ * Created by anriku on 2019-10-08.
  */
 
-public class SCAppCompatTextView extends AppCompatTextView {
+public class SCAppCompatEditText extends AppCompatEditText {
 
-    private final SCBackgroundHelper mSCBackgroundDrawableHelper;
+    private final SCBackgroundHelper mSCBackgroundHelper;
     private final SCTextAppearanceHelper mSCTextAppearanceHelper;
     private final SCCompoundDrawablesHelper mSCCompoundDrawablesHelper;
     private final SCRelativeCompoundDrawablesHelper mSCRelativeCompoundDrawablesHelper;
 
-    public SCAppCompatTextView(Context context) {
+    public SCAppCompatEditText(Context context) {
         this(context, null);
     }
 
-    public SCAppCompatTextView(Context context, AttributeSet attrs) {
-        this(context, attrs, android.R.attr.textViewStyle);
+    public SCAppCompatEditText(Context context, AttributeSet attrs) {
+        this(context, attrs, android.R.attr.editTextStyle);
     }
 
-    public SCAppCompatTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SCAppCompatEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        mSCBackgroundDrawableHelper = new SCBackgroundHelper(this);
+        mSCBackgroundHelper = new SCBackgroundHelper(this);
         mSCTextAppearanceHelper = new SCTextAppearanceHelper(this);
         mSCCompoundDrawablesHelper = new SCCompoundDrawablesHelper(this);
         mSCRelativeCompoundDrawablesHelper = new SCRelativeCompoundDrawablesHelper(this);
 
-        mSCBackgroundDrawableHelper.loadFromAttributes(attrs, defStyleAttr);
+        mSCBackgroundHelper.loadFromAttributes(attrs, defStyleAttr);
         mSCTextAppearanceHelper.loadFromAttributes(attrs, defStyleAttr);
         mSCCompoundDrawablesHelper.loadFromAttributes(attrs, defStyleAttr);
         mSCRelativeCompoundDrawablesHelper.loadFromAttributes(attrs, defStyleAttr);
@@ -91,7 +91,7 @@ public class SCAppCompatTextView extends AppCompatTextView {
 
     @Override
     public void setBackgroundResource(int resId) {
-        int[] newResIds = mSCBackgroundDrawableHelper.recordAndReplaceResIds(new int[]{resId});
+        int[] newResIds = mSCBackgroundHelper.recordAndReplaceResIds(new int[]{resId});
         if (newResIds != null) {
             resId = newResIds[0];
         }

@@ -2,6 +2,7 @@ package com.anriku.scplugin.plugin
 
 import com.android.build.gradle.AppExtension
 import com.anriku.scplugin.extension.SkinChangeExtension
+import com.anriku.scplugin.transform.CustomTransform
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -19,7 +20,7 @@ class SkinChangePlugin implements Plugin<Project> {
             return
         }
         AppExtension android = project.extensions.getByType(AppExtension)
-        android.registerTransform(new com.anriku.scplugin.transform.CustomTransform(skinChangeExtension))
+        android.registerTransform(new CustomTransform(skinChangeExtension))
     }
 }
 

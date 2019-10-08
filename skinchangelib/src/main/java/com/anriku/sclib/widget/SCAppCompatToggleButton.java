@@ -3,7 +3,7 @@ package com.anriku.sclib.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.AppCompatToggleButton;
 
 import com.anriku.sclib.helpers.SCBackgroundHelper;
 import com.anriku.sclib.helpers.SCCompoundDrawablesHelper;
@@ -11,25 +11,25 @@ import com.anriku.sclib.helpers.SCRelativeCompoundDrawablesHelper;
 import com.anriku.sclib.helpers.SCTextAppearanceHelper;
 
 /**
- * Created by anriku on 2019-10-07.
+ * Created by anriku on 2019-10-09.
  */
 
-public class SCAppCompatTextView extends AppCompatTextView {
+public class SCAppCompatToggleButton extends AppCompatToggleButton {
 
     private final SCBackgroundHelper mSCBackgroundDrawableHelper;
     private final SCTextAppearanceHelper mSCTextAppearanceHelper;
     private final SCCompoundDrawablesHelper mSCCompoundDrawablesHelper;
     private final SCRelativeCompoundDrawablesHelper mSCRelativeCompoundDrawablesHelper;
 
-    public SCAppCompatTextView(Context context) {
+    public SCAppCompatToggleButton(Context context) {
         this(context, null);
     }
 
-    public SCAppCompatTextView(Context context, AttributeSet attrs) {
-        this(context, attrs, android.R.attr.textViewStyle);
+    public SCAppCompatToggleButton(Context context, AttributeSet attrs) {
+        this(context, attrs, android.R.attr.buttonStyleToggle);
     }
 
-    public SCAppCompatTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SCAppCompatToggleButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         mSCBackgroundDrawableHelper = new SCBackgroundHelper(this);

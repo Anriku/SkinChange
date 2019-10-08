@@ -7,11 +7,10 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-
-    <ImageView
-        android:id="@+id/iv"
-        android:background="@color/dark"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:drawableStart="@drawable/ic_audiotrack_black_24dp"
+        android:background="@color/test_color"/>
 
 </LinearLayout>

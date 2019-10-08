@@ -15,16 +15,17 @@ import java.util.HashMap;
  */
 public class RModifyVisitor extends ClassVisitor {
 
-    public HashMap<String, Integer> stringToInteger = new HashMap<>();
+    private HashMap<String, Integer> mStringToInteger;
 
-    public RModifyVisitor(ClassVisitor cv) {
-        super(Opcodes.ASM6, cv);
+    public RModifyVisitor(ClassVisitor cv, HashMap<String, Integer> stringToInteger) {
+        super(VisitorVersion.VERSION, cv);
+        this.mStringToInteger = stringToInteger;
     }
 
     @Override
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
         if (desc.equals(Type.getDescriptor(int.class))) {
-            stringToInteger.put(name, (Integer) value);
+            mStringToInteger.put(name, (Integer) value);
         }
         return super.visitField(access, name, desc, signature, value);
     }

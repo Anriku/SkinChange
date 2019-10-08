@@ -6,15 +6,13 @@ import android.view.View;
 
 import com.anriku.sclib.annotation.SkinChangeFunction;
 import com.anriku.sclib.annotation.SkinChangeFunctionArray;
-import com.anriku.sclib.helpers.SCBackgroundColorHelper;
-import com.anriku.sclib.helpers.SCBackgroundDrawableHelper;
+import com.anriku.sclib.helpers.SCBackgroundHelper;
 
 
 /**
  * Created by anriku on 2019-10-05.
  */
-@SkinChangeFunctionArray(helperClassesWholeName = {SCBackgroundColorHelper.class,
-        SCBackgroundDrawableHelper.class})
+@SkinChangeFunctionArray(helperClassesWholeName = {SCBackgroundHelper.class})
 public class SCView extends View {
 
     public SCView(Context context) {
@@ -22,7 +20,7 @@ public class SCView extends View {
     }
 
     public SCView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public SCView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -30,14 +28,7 @@ public class SCView extends View {
     }
 
     @Override
-    @SkinChangeFunction(helperClassWholeName = SCBackgroundColorHelper.class,
-            parameterIndexes = {0})
-    public void setBackgroundColor(int color) {
-        super.setBackgroundColor(color);
-    }
-
-    @Override
-    @SkinChangeFunction(helperClassWholeName = SCBackgroundDrawableHelper.class,
+    @SkinChangeFunction(helperClassWholeName = SCBackgroundHelper.class,
             parameterIndexes = {0})
     public void setBackgroundResource(int resid) {
         super.setBackgroundResource(resid);

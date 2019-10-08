@@ -3,7 +3,7 @@ package com.anriku.sclib.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.anriku.sclib.helpers.SCBackgroundHelper;
 import com.anriku.sclib.helpers.SCCompoundDrawablesHelper;
@@ -11,25 +11,25 @@ import com.anriku.sclib.helpers.SCRelativeCompoundDrawablesHelper;
 import com.anriku.sclib.helpers.SCTextAppearanceHelper;
 
 /**
- * Created by anriku on 2019-10-07.
+ * Created by anriku on 2019-10-08.
  */
 
-public class SCAppCompatTextView extends AppCompatTextView {
+public class SCAppCompactButton extends AppCompatButton {
 
     private final SCBackgroundHelper mSCBackgroundDrawableHelper;
     private final SCTextAppearanceHelper mSCTextAppearanceHelper;
     private final SCCompoundDrawablesHelper mSCCompoundDrawablesHelper;
     private final SCRelativeCompoundDrawablesHelper mSCRelativeCompoundDrawablesHelper;
 
-    public SCAppCompatTextView(Context context) {
+    public SCAppCompactButton(Context context) {
         this(context, null);
     }
 
-    public SCAppCompatTextView(Context context, AttributeSet attrs) {
-        this(context, attrs, android.R.attr.textViewStyle);
+    public SCAppCompactButton(Context context, AttributeSet attrs) {
+        this(context, attrs, android.R.attr.buttonStyle);
     }
 
-    public SCAppCompatTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SCAppCompactButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         mSCBackgroundDrawableHelper = new SCBackgroundHelper(this);
@@ -42,6 +42,7 @@ public class SCAppCompatTextView extends AppCompatTextView {
         mSCCompoundDrawablesHelper.loadFromAttributes(attrs, defStyleAttr);
         mSCRelativeCompoundDrawablesHelper.loadFromAttributes(attrs, defStyleAttr);
     }
+
 
     @Override
     public void setTextAppearance(int resId) {

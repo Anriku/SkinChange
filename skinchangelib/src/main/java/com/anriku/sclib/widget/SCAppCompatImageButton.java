@@ -3,29 +3,29 @@ package com.anriku.sclib.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatImageButton;
 
 import com.anriku.sclib.helpers.SCBackgroundHelper;
 import com.anriku.sclib.helpers.SCImageHelper;
 
 /**
- * Created by anriku on 2019-10-07.
+ * Created by anriku on 2019-10-08.
  */
 
-public class SCAppCompatImageView extends AppCompatImageView {
+public class SCAppCompatImageButton extends AppCompatImageButton {
 
     private final SCImageHelper mSCImageHelper;
     private final SCBackgroundHelper mSCBackgroundHelper;
 
-    public SCAppCompatImageView(Context context) {
+    public SCAppCompatImageButton(Context context) {
         this(context, null);
     }
 
-    public SCAppCompatImageView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    public SCAppCompatImageButton(Context context, AttributeSet attrs) {
+        this(context, attrs, android.R.attr.imageButtonStyle);
     }
 
-    public SCAppCompatImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SCAppCompatImageButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         mSCImageHelper = new SCImageHelper(this);

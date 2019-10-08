@@ -12,6 +12,7 @@ import java.util.Set;
  */
 public class RMapsDump {
 
+    public static final String RMAPS_PACKAGE = "com.anriku.rmaps";
     public static final String RMAPS = "RMaps";
     public static final String STRING_TO_INTEGER = "stringToInteger";
     public static final String INTEGER_TO_STRING = "integerToString";
