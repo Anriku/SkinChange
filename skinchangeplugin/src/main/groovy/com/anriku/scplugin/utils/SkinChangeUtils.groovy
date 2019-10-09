@@ -8,6 +8,7 @@ import com.android.utils.FileUtils
 import com.anriku.scplugin.dump.RMapsDump
 import com.anriku.scplugin.extension.SkinChangeExtension
 import com.anriku.scplugin.visitor.AppCompatViewInflaterVisitor
+import com.anriku.scplugin.visitor.NewViewVisitor
 import com.anriku.scplugin.visitor.RModifyVisitor
 import com.anriku.scplugin.visitor.ResUtilsVisitor
 import com.anriku.scplugin.visitor.SkinChangeVisitor
@@ -51,6 +52,12 @@ class SkinChangeUtils {
                         ClassReader classReader = new ClassReader(file.bytes)
                         ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
                         ClassVisitor cv = new RModifyVisitor(classWriter, getStringToIntegerHashMap(name))
+                        classReader.accept(cv, 0)
+                        dumpFile(classWriter.toByteArray(), file.parentFile.absolutePath + File.separator + name)
+                    } else {
+                        ClassReader classReader = new ClassReader(file.bytes)
+                        ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
+                        ClassVisitor cv = new NewViewVisitor(classWriter)
                         classReader.accept(cv, 0)
                         dumpFile(classWriter.toByteArray(), file.parentFile.absolutePath + File.separator + name)
                     }
@@ -116,18 +123,18 @@ class SkinChangeUtils {
                         classReader.accept(cv, 0)
                         byte[] code = classWriter.toByteArray()
                         jarOutputStream.write(code)
+                    } else if (checkIsProjectsFile(jarInput.file)) {
+                        jarOutputStream.putNextEntry(newJarEntry)
+                        ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
+                        ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
+                        ClassVisitor cv = new NewViewVisitor(classWriter)
+                        classReader.accept(cv, 0)
+                        byte[] code = classWriter.toByteArray()
+                        jarOutputStream.write(code)
                     } else {
                         jarOutputStream.putNextEntry(newJarEntry)
                         jarOutputStream.write(IOUtils.toByteArray(inputStream))
                     }
-//                } else if (checkRInnerClassFile(entryName) && checkIsProjectsRFile(jarInput.file)) {
-//                    jarOutputStream.putNextEntry(newJarEntry)
-//                    ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
-//                    ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-//                    ClassVisitor cv = new RModifyVisitor(classWriter, getStringToIntegerHashMap(entryName))
-//                    classReader.accept(cv, 0)
-//                    byte[] code = classWriter.toByteArray()
-//                    jarOutputStream.write(code)
                 } else {
                     jarOutputStream.putNextEntry(newJarEntry)
                     jarOutputStream.write(IOUtils.toByteArray(inputStream))
@@ -203,7 +210,7 @@ class SkinChangeUtils {
     /**
      * 判断该R文件是否是项目模块的R文件
      */
-    boolean checkIsProjectsRFile(File file) {
+    boolean checkIsProjectsFile(File file) {
         String[] projects = sSkinChangeExtension.projects
         if (projects == null) {
             return false

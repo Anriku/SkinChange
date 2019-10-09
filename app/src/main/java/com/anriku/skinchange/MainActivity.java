@@ -2,10 +2,13 @@ package com.anriku.skinchange;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.anriku.sclib.utils.ResUtils;
+import com.anriku.sclib.widget.SCAppCompatTextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +22,10 @@ public class MainActivity extends AppCompatActivity {
                 ResUtils.changeSkin(MainActivity.this, "", getWindow().getDecorView());
             }
         });
+        TextView textView = new TextView(this);
+        textView.setBackgroundResource(R.color.test_color);
+        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_audiotrack_black_24dp, 0, 0, 0);
+        ((LinearLayout)findViewById(R.id.ll)).addView(textView);
     }
 
 }
