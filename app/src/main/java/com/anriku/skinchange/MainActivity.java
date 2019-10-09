@@ -8,7 +8,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.anriku.sclib.utils.ResUtils;
-import com.anriku.sclib.widget.SCAppCompatTextView;
 
 public class MainActivity extends AppCompatActivity {
 

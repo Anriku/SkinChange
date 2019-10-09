@@ -70,6 +70,10 @@ class CustomTransform extends Transform {
         if (dInput != null) {
             skinChangeUtils.dumpRMapsFile(dInput, outputProvider)
         }
+        // 生成一系列的AppCompat的代理类
+        if (dInput != null) {
+            skinChangeUtils.dumpAppCompatFiles(dInput, outputProvider)
+        }
     }
 
 }

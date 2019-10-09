@@ -5,4 +5,6 @@ class SkinChangeExtension {
 
     String[] projects
 
+    boolean isUseAndroidX
+
 }
