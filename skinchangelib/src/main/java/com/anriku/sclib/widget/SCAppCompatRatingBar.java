@@ -10,7 +10,7 @@ import com.anriku.sclib.helpers.SCBackgroundHelper;
 /**
  * Created by anriku on 2019-10-08.
  */
-public class SCAppCompatRatingBar extends AppCompatRatingBar {
+public class SCAppCompatRatingBar extends AppCompatRatingBar implements SkinChange {
 
     private final SCBackgroundHelper mSCBackgroundHelper;
 
@@ -39,4 +39,8 @@ public class SCAppCompatRatingBar extends AppCompatRatingBar {
         super.setBackgroundResource(resId);
     }
 
+    @Override
+    public void applySkinChange() {
+        mSCBackgroundHelper.applySkinChange();
+    }
 }

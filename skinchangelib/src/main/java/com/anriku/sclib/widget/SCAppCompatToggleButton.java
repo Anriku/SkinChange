@@ -14,7 +14,7 @@ import com.anriku.sclib.helpers.SCTextAppearanceHelper;
  * Created by anriku on 2019-10-09.
  */
 
-public class SCAppCompatToggleButton extends AppCompatToggleButton {
+public class SCAppCompatToggleButton extends AppCompatToggleButton implements SkinChange {
 
     private final SCBackgroundHelper mSCBackgroundDrawableHelper;
     private final SCTextAppearanceHelper mSCTextAppearanceHelper;
@@ -96,5 +96,13 @@ public class SCAppCompatToggleButton extends AppCompatToggleButton {
             resId = newResIds[0];
         }
         super.setBackgroundResource(resId);
+    }
+
+    @Override
+    public void applySkinChange() {
+        mSCBackgroundDrawableHelper.applySkinChange();
+        mSCTextAppearanceHelper.applySkinChange();
+        mSCCompoundDrawablesHelper.applySkinChange();
+        mSCRelativeCompoundDrawablesHelper.applySkinChange();
     }
 }

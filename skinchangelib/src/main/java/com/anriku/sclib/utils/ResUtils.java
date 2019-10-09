@@ -3,8 +3,14 @@ package com.anriku.sclib.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.anriku.sclib.widget.SkinChange;
+
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 /**
  * Created by anriku on 2019-10-06.
@@ -12,7 +18,7 @@ import java.util.Map;
 public class ResUtils {
     public static final String SP_NAME = "SkinChange";
     public static final String KEY = "skin_name";
-    public static String sSkinSuffix = "_night";
+    private static String sSkinSuffix = "_night";
 
     /**
      * 该方法应该在Application中进行初始化调用
@@ -25,10 +31,39 @@ public class ResUtils {
     /**
      * 切换皮肤时进行调用
      */
-    public static void changeSkin(Context context, String skinName) {
+    public static void changeSkin(Context context, String skinName, View view) {
+        if (skinName == null || skinName.isEmpty()) {
+            sSkinSuffix = "";
+            skinName = "";
+        } else {
+            skinName = "_" + skinName;
+        }
+
         Editor editor = context.getSharedPreferences("SkinChange", 0).edit();
         editor.putString("skin_name", skinName);
         editor.apply();
+
+        if (view != null) {
+            applyChangeToView(view);
+        }
+    }
+
+    private static void applyChangeToView(View view) {
+        Queue<View> queue = new LinkedList<>();
+        queue.add(view);
+        while (!queue.isEmpty()) {
+            View tempView = queue.poll();
+            if (tempView instanceof SkinChange) {
+                ((SkinChange) tempView).applySkinChange();
+            }
+            if (tempView instanceof ViewGroup) {
+                ViewGroup tempViewGroup = (ViewGroup) tempView;
+                int count = tempViewGroup.getChildCount();
+                for (int i = 0; i < count; i++) {
+                    queue.offer(tempViewGroup.getChildAt(i));
+                }
+            }
+        }
     }
 
     public static int getNewDrawableOrColorResId(Context context, int resId) {

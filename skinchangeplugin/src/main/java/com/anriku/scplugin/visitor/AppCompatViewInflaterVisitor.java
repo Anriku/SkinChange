@@ -12,6 +12,8 @@ import java.io.File;
 
 public class AppCompatViewInflaterVisitor extends ClassVisitor {
 
+    // AppCompatViewInflaterUtils的全限定名
+    public static final String APPCOMPAT_VIEW_INFLATER_UTILS = "com/anriku/sclib/utils/CreateViewUtils";
     public static final String PACKAGE_NAME = "com.anriku.sclib.widget";
 
     public AppCompatViewInflaterVisitor(ClassVisitor cv) {
@@ -78,7 +80,7 @@ public class AppCompatViewInflaterVisitor extends ClassVisitor {
                 mv.visitVarInsn(Opcodes.ALOAD, 1);
                 mv.visitVarInsn(Opcodes.ALOAD, 2);
                 mv.visitVarInsn(Opcodes.ALOAD, 3);
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anriku/sclib/utils/AppComaptViewInflaterUtils", "createView", "(Landroid/content/Context;Ljava/lang/String;Landroid/util/AttributeSet;)Landroid/view/View;", false);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, APPCOMPAT_VIEW_INFLATER_UTILS, "createView", "(Landroid/content/Context;Ljava/lang/String;Landroid/util/AttributeSet;)Landroid/view/View;", false);
             } else {
                 super.visitInsn(opcode);
             }

@@ -14,7 +14,7 @@ import com.anriku.sclib.helpers.SCTextAppearanceHelper;
  * Created by anriku on 2019-10-07.
  */
 
-public class SCAppCompatTextView extends AppCompatTextView {
+public class SCAppCompatTextView extends AppCompatTextView implements SkinChange {
 
     private final SCBackgroundHelper mSCBackgroundDrawableHelper;
     private final SCTextAppearanceHelper mSCTextAppearanceHelper;
@@ -96,5 +96,13 @@ public class SCAppCompatTextView extends AppCompatTextView {
             resId = newResIds[0];
         }
         super.setBackgroundResource(resId);
+    }
+
+    @Override
+    public void applySkinChange() {
+        mSCBackgroundDrawableHelper.applySkinChange();
+        mSCTextAppearanceHelper.applySkinChange();
+        mSCCompoundDrawablesHelper.applySkinChange();
+        mSCRelativeCompoundDrawablesHelper.applySkinChange();
     }
 }

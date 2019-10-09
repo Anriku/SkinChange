@@ -14,7 +14,7 @@ import com.anriku.sclib.helpers.SCTextAppearanceHelper;
  * Created by anriku on 2019-10-08.
  */
 
-public class SCAppCompatAutoCompleteTextView extends AppCompatAutoCompleteTextView {
+public class SCAppCompatAutoCompleteTextView extends AppCompatAutoCompleteTextView implements SkinChange {
 
     private final SCBackgroundHelper mSCBackgroundDrawableHelper;
     private final SCTextAppearanceHelper mSCTextAppearanceHelper;
@@ -96,5 +96,13 @@ public class SCAppCompatAutoCompleteTextView extends AppCompatAutoCompleteTextVi
             resId = newResIds[0];
         }
         super.setBackgroundResource(resId);
+    }
+
+    @Override
+    public void applySkinChange() {
+        mSCBackgroundDrawableHelper.applySkinChange();
+        mSCTextAppearanceHelper.applySkinChange();
+        mSCCompoundDrawablesHelper.applySkinChange();
+        mSCRelativeCompoundDrawablesHelper.applySkinChange();
     }
 }

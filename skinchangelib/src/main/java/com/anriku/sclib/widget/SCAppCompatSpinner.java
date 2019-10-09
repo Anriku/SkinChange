@@ -12,7 +12,7 @@ import com.anriku.sclib.helpers.SCBackgroundHelper;
  * Created by anriku on 2019-10-09.
  */
 
-public class SCAppCompatSpinner extends AppCompatSpinner {
+public class SCAppCompatSpinner extends AppCompatSpinner implements SkinChange {
 
     private final SCBackgroundHelper mSCBackgroundHelper;
 
@@ -51,5 +51,10 @@ public class SCAppCompatSpinner extends AppCompatSpinner {
             resId = newResIds[0];
         }
         super.setBackgroundResource(resId);
+    }
+
+    @Override
+    public void applySkinChange() {
+        mSCBackgroundHelper.applySkinChange();
     }
 }

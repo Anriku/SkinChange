@@ -47,12 +47,14 @@ public class SCRelativeCompoundDrawablesHelper extends SCCompoundDrawablesHelper
                 }
             }
 
-            ((TextView) mView).setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    resIds[0],
-                    resIds[1],
-                    resIds[2],
-                    resIds[3]
-            );
+            if (resIds[0] != INVALID_ID || resIds[2] != INVALID_ID) {
+                ((TextView) mView).setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        resIds[0],
+                        resIds[1],
+                        resIds[2],
+                        resIds[3]
+                );
+            }
         }
     }
 }

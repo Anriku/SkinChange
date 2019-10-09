@@ -15,7 +15,7 @@ import com.anriku.sclib.helpers.SCTextAppearanceHelper;
  * Created by anriku on 2019-10-08.
  */
 
-public class SCAppCompactCheckBox extends AppCompatCheckBox {
+public class SCAppCompactCheckBox extends AppCompatCheckBox implements SkinChange {
 
     private final SCBackgroundHelper mSCBackgroundDrawableHelper;
     private final SCTextAppearanceHelper mSCTextAppearanceHelper;
@@ -109,5 +109,14 @@ public class SCAppCompactCheckBox extends AppCompatCheckBox {
             resId = newResIds[0];
         }
         super.setButtonDrawable(resId);
+    }
+
+    @Override
+    public void applySkinChange() {
+        mSCBackgroundDrawableHelper.applySkinChange();
+        mSCTextAppearanceHelper.applySkinChange();
+        mSCCompoundDrawablesHelper.applySkinChange();
+        mSCRelativeCompoundDrawablesHelper.applySkinChange();
+        mSCButtonHelper.applySkinChange();
     }
 }

@@ -12,7 +12,7 @@ import com.anriku.sclib.helpers.SCImageHelper;
  * Created by anriku on 2019-10-07.
  */
 
-public class SCAppCompatImageView extends AppCompatImageView {
+public class SCAppCompatImageView extends AppCompatImageView implements SkinChange {
 
     private final SCImageHelper mSCImageHelper;
     private final SCBackgroundHelper mSCBackgroundHelper;
@@ -51,5 +51,11 @@ public class SCAppCompatImageView extends AppCompatImageView {
             resId = newResIds[0];
         }
         super.setImageResource(resId);
+    }
+
+    @Override
+    public void applySkinChange() {
+        mSCImageHelper.applySkinChange();
+        mSCBackgroundHelper.applySkinChange();
     }
 }

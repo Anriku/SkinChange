@@ -66,7 +66,6 @@ public class ResUtilsVisitor extends ClassVisitor {
 
         @Override
         public void visitInsn(int opcode) {
-            System.out.println("betawenwen:" + mMapsClassName);
             if (opcode == Opcodes.IRETURN) {
                 mv.visitFieldInsn(Opcodes.GETSTATIC, mMapsClassName, "integerToString", "Ljava/util/HashMap;");
                 mv.visitFieldInsn(Opcodes.GETSTATIC, mMapsClassName, "stringToInteger", "Ljava/util/HashMap;");

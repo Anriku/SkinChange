@@ -38,9 +38,13 @@ import com.anriku.sclib.widget.SCCompatMultiAutoCompleteTextView;
  * Created by anriku on 2019-10-09.
  */
 
-public class AppComaptViewInflaterUtils {
+public class CreateViewUtils {
 
     public static View createView(Context context, String name, AttributeSet attrs) {
+        int index = name.lastIndexOf(".");
+        if (index != -1) {
+            name = name.substring(index + 1);
+        }
         View view;
         switch (name) {
             case "AppCompatTextView":

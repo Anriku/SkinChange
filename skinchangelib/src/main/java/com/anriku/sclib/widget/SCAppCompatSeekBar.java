@@ -11,7 +11,7 @@ import com.anriku.sclib.helpers.SCBackgroundHelper;
  * Created by anriku on 2019-10-08.
  */
 
-public class SCAppCompatSeekBar extends AppCompatSeekBar {
+public class SCAppCompatSeekBar extends AppCompatSeekBar implements SkinChange {
 
     private final SCBackgroundHelper mSCBackgroundHelper;
 
@@ -40,4 +40,8 @@ public class SCAppCompatSeekBar extends AppCompatSeekBar {
         super.setBackgroundResource(resId);
     }
 
+    @Override
+    public void applySkinChange() {
+        mSCBackgroundHelper.applySkinChange();
+    }
 }
