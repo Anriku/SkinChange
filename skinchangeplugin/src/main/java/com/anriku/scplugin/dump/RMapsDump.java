@@ -1,5 +1,7 @@
 package com.anriku.scplugin.dump;
 
+import com.anriku.scplugin.utils.IntLdcUtils;
+
 import org.objectweb.asm.*;
 
 import java.io.File;
@@ -85,15 +87,7 @@ public class RMapsDump {
         mv.visitFieldInsn(Opcodes.GETSTATIC, className, STRING_TO_INTEGER, "Ljava/util/HashMap;");
         mv.visitLdcInsn(key);
 
-        if (value >= -1 && value <= 5) {
-            mv.visitInsn(value + 3);
-        } else if (value >= -128 && value <= 127) {
-            mv.visitIntInsn(Opcodes.BIPUSH, value);
-        } else if (value >= -32768 && value <= 32767) {
-            mv.visitIntInsn(Opcodes.SIPUSH, value);
-        } else {
-            mv.visitLdcInsn(value);
-        }
+        IntLdcUtils.loadIntValue(mv, value);
 
         mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
         mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/HashMap", "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", false);

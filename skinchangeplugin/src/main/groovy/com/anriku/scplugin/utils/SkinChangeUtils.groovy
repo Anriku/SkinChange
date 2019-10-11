@@ -23,10 +23,10 @@ import com.anriku.scplugin.dump.SCAppCompatToggleButtonDump
 import com.anriku.scplugin.dump.SCCompatMultiAutoCompleteTextViewDump
 import com.anriku.scplugin.extension.SkinChangeExtension
 import com.anriku.scplugin.visitor.AppCompatViewInflaterVisitor
-import com.anriku.scplugin.visitor.NewViewVisitor
+import com.anriku.scplugin.visitor.SkinChangeVisitor
 import com.anriku.scplugin.visitor.RModifyVisitor
 import com.anriku.scplugin.visitor.ResUtilsVisitor
-import com.anriku.scplugin.visitor.SkinChangeVisitor
+
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.compress.utils.IOUtils
 import org.objectweb.asm.ClassReader
@@ -56,15 +56,7 @@ class SkinChangeUtils {
                 def name = file.name
                 if (checkClassFile(name)) {
                     println '----------- handleDirectoryInput: <' + name + '> -----------'
-                    if (checkViewClassFile(name)) {
-
-                        ClassReader classReader = new ClassReader(file.bytes)
-                        ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-                        ClassVisitor cv = new SkinChangeVisitor(classWriter)
-                        classReader.accept(cv, 0)
-                        dumpFile(classWriter.toByteArray(), file.parentFile.absolutePath + File.separator + name)
-
-                    } else if (checkRInnerClassFile(name)) {
+                    if (checkRInnerClassFile(name)) {
                         // 对R文件中的每个内部类文件的资源进行记录
                         ClassReader classReader = new ClassReader(file.bytes)
                         ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
@@ -74,7 +66,7 @@ class SkinChangeUtils {
                     } else {
                         ClassReader classReader = new ClassReader(file.bytes)
                         ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-                        ClassVisitor cv = new NewViewVisitor(classWriter)
+                        ClassVisitor cv = new SkinChangeVisitor(classWriter)
                         classReader.accept(cv, 0)
                         dumpFile(classWriter.toByteArray(), file.parentFile.absolutePath + File.separator + name)
                     }
@@ -116,15 +108,7 @@ class SkinChangeUtils {
 
                 if (checkClassFile(entryName)) {
                     println '----------- handleJarInputs: <' + entryName + '> -----------'
-                    if (checkViewClassFile(entryName)) {
-                        jarOutputStream.putNextEntry(newJarEntry)
-                        ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
-                        ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-                        ClassVisitor cv = new SkinChangeVisitor(classWriter)
-                        classReader.accept(cv, 0)
-                        byte[] code = classWriter.toByteArray()
-                        jarOutputStream.write(code)
-                    } else if (checkResUtilsClass(entryName)) {
+                    if (checkResUtilsClass(entryName)) {
                         jarOutputStream.putNextEntry(newJarEntry)
                         ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
                         ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
@@ -144,7 +128,7 @@ class SkinChangeUtils {
                         jarOutputStream.putNextEntry(newJarEntry)
                         ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
                         ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-                        ClassVisitor cv = new NewViewVisitor(classWriter)
+                        ClassVisitor cv = new SkinChangeVisitor(classWriter)
                         classReader.accept(cv, 0)
                         byte[] code = classWriter.toByteArray()
                         jarOutputStream.write(code)
@@ -229,7 +213,8 @@ class SkinChangeUtils {
             return false
         }
         String path = file.getAbsolutePath()
-        projects.each { project ->
+        for (int i = 0; i < projects.length; i++) {
+            String project = projects[i]
             if (path.contains(project)) {
                 return true
             }

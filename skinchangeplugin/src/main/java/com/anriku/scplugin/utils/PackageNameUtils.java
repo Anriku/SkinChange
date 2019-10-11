@@ -7,7 +7,7 @@ package com.anriku.scplugin.utils;
 public class PackageNameUtils {
 
     public static final String ANDROID_X_VIEW_PACKAGE_NAME = "androidx/appcompat/widget";
-    public static final String SUPPORT_VIEW_PACKAGE_NAME = "androidx/appcompat/widget";
+    public static final String SUPPORT_VIEW_PACKAGE_NAME = "android/support/v7/widget";
     public static String sViewPackageName = ANDROID_X_VIEW_PACKAGE_NAME;
 
 }
