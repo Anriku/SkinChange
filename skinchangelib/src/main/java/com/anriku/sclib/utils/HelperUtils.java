@@ -1,17 +1,12 @@
 package com.anriku.sclib.utils;
 
 import com.anriku.sclib.helpers.SCHelper;
-import com.anriku.sclib.widget.SCTextView;
 
 /**
  * Created by anriku on 2019-10-11.
  */
 
 public class HelperUtils {
-
-    public static void main(String[] args) {
-        Class c = SCTextView.class;
-    }
 
     public static int[] secureRecordAndReplaceResIds(SCHelper helper, int[] resIds) {
         int[] newResIds = helper.recordAndReplaceResIds(resIds);

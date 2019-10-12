@@ -3,7 +3,7 @@ package com.anriku.sclib.widget;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 
 import com.anriku.sclib.annotation.SkinChangeFunction;
 import com.anriku.sclib.annotation.SkinChangeFunctionArray;
@@ -11,7 +11,7 @@ import com.anriku.sclib.helpers.SCBackgroundHelper;
 import com.anriku.sclib.helpers.SCImageHelper;
 
 /**
- * Created by anriku on 2019-10-07.
+ * Created by anriku on 2019-10-12.
  */
 
 @SuppressLint("AppCompatCustomView")
@@ -19,25 +19,25 @@ import com.anriku.sclib.helpers.SCImageHelper;
         SCBackgroundHelper.class,
         SCImageHelper.class
 })
-public class SCImageView extends ImageView implements SkinChange {
+public class SCImageButton extends ImageButton implements SkinChange {
 
-    public SCImageView(Context context) {
+    public SCImageButton(Context context) {
         this(context, null);
     }
 
-    public SCImageView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    public SCImageButton(Context context, AttributeSet attrs) {
+        this(context, attrs, android.R.attr.imageButtonStyle);
     }
 
-    public SCImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SCImageButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     @SkinChangeFunction(helperClassWholeName = SCBackgroundHelper.class,
             parameterIndexes = {0})
-    public void setBackgroundResource(int resid) {
-        super.setBackgroundResource(resid);
+    public void setBackgroundResource(int resId) {
+        super.setBackgroundResource(resId);
     }
 
     @Override

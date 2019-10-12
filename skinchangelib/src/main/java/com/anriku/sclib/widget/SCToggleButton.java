@@ -1,9 +1,8 @@
 package com.anriku.sclib.widget;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.anriku.sclib.annotation.SkinChangeFunction;
 import com.anriku.sclib.annotation.SkinChangeFunctionArray;
@@ -13,28 +12,26 @@ import com.anriku.sclib.helpers.SCRelativeCompoundDrawablesHelper;
 import com.anriku.sclib.helpers.SCTextAppearanceHelper;
 
 /**
- * Created by anriku on 2019-10-07.
+ * Created by anriku on 2019-10-12.
  */
-
-@SuppressLint("AppCompatCustomView")
 @SkinChangeFunctionArray(helperClassesWholeName = {
         SCTextAppearanceHelper.class,
         SCRelativeCompoundDrawablesHelper.class,
         SCCompoundDrawablesHelper.class,
         SCBackgroundHelper.class
 })
-public class SCTextView extends TextView implements SkinChange{
+public class SCToggleButton extends ToggleButton implements SkinChange {
 
-    public SCTextView(Context context) {
-        this(context, null);
+    public SCToggleButton(Context context, AttributeSet attrs) {
+        this(context, attrs, android.R.attr.buttonStyleToggle);
     }
 
-    public SCTextView(Context context, AttributeSet attrs) {
-        this(context, attrs, android.R.attr.textViewStyle);
-    }
-
-    public SCTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SCToggleButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public SCToggleButton(Context context) {
+        this(context, null);
     }
 
     @Override
@@ -70,6 +67,7 @@ public class SCTextView extends TextView implements SkinChange{
     public void setBackgroundResource(int resId) {
         super.setBackgroundResource(resId);
     }
+
 
     @Override
     public void applySkinChange() {

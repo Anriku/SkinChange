@@ -3,7 +3,7 @@ package com.anriku.sclib.widget;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.TextView;
+import android.widget.Button;
 
 import com.anriku.sclib.annotation.SkinChangeFunction;
 import com.anriku.sclib.annotation.SkinChangeFunctionArray;
@@ -13,7 +13,7 @@ import com.anriku.sclib.helpers.SCRelativeCompoundDrawablesHelper;
 import com.anriku.sclib.helpers.SCTextAppearanceHelper;
 
 /**
- * Created by anriku on 2019-10-07.
+ * Created by anriku on 2019-10-12.
  */
 
 @SuppressLint("AppCompatCustomView")
@@ -23,17 +23,17 @@ import com.anriku.sclib.helpers.SCTextAppearanceHelper;
         SCCompoundDrawablesHelper.class,
         SCBackgroundHelper.class
 })
-public class SCTextView extends TextView implements SkinChange{
+public class SCButton extends Button implements SkinChange {
 
-    public SCTextView(Context context) {
+    public SCButton(Context context) {
         this(context, null);
     }
 
-    public SCTextView(Context context, AttributeSet attrs) {
-        this(context, attrs, android.R.attr.textViewStyle);
+    public SCButton(Context context, AttributeSet attrs) {
+        this(context, attrs, android.R.attr.buttonStyle);
     }
 
-    public SCTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SCButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

@@ -3,17 +3,18 @@ package com.anriku.sclib.widget;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.TextView;
+import android.widget.CheckBox;
 
 import com.anriku.sclib.annotation.SkinChangeFunction;
 import com.anriku.sclib.annotation.SkinChangeFunctionArray;
 import com.anriku.sclib.helpers.SCBackgroundHelper;
+import com.anriku.sclib.helpers.SCButtonHelper;
 import com.anriku.sclib.helpers.SCCompoundDrawablesHelper;
 import com.anriku.sclib.helpers.SCRelativeCompoundDrawablesHelper;
 import com.anriku.sclib.helpers.SCTextAppearanceHelper;
 
 /**
- * Created by anriku on 2019-10-07.
+ * Created by anriku on 2019-10-12.
  */
 
 @SuppressLint("AppCompatCustomView")
@@ -21,19 +22,20 @@ import com.anriku.sclib.helpers.SCTextAppearanceHelper;
         SCTextAppearanceHelper.class,
         SCRelativeCompoundDrawablesHelper.class,
         SCCompoundDrawablesHelper.class,
-        SCBackgroundHelper.class
+        SCBackgroundHelper.class,
+        SCButtonHelper.class
 })
-public class SCTextView extends TextView implements SkinChange{
+public class SCCheckBox extends CheckBox implements SkinChange {
 
-    public SCTextView(Context context) {
+    public SCCheckBox(Context context) {
         this(context, null);
     }
 
-    public SCTextView(Context context, AttributeSet attrs) {
-        this(context, attrs, android.R.attr.textViewStyle);
+    public SCCheckBox(Context context, AttributeSet attrs) {
+        this(context, attrs, android.R.attr.checkboxStyle);
     }
 
-    public SCTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SCCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -69,6 +71,13 @@ public class SCTextView extends TextView implements SkinChange{
     @SkinChangeFunction(helperClassWholeName = SCBackgroundHelper.class, parameterIndexes = {0})
     public void setBackgroundResource(int resId) {
         super.setBackgroundResource(resId);
+    }
+
+    @Override
+    @SkinChangeFunction(helperClassWholeName = SCButtonHelper.class,
+            parameterIndexes = {0})
+    public void setButtonDrawable(int resId) {
+        super.setButtonDrawable(resId);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.anriku.scplugin.visitor.method;
+package com.anriku.scplugin.utils;
 
 import com.anriku.scplugin.utils.ConstructorUtils;
 import com.anriku.scplugin.utils.IntLdcUtils;
@@ -65,6 +65,37 @@ public class AddHelpersUtils {
                 localIndex++;
             }
             mv.visitVarInsn(Opcodes.ISTORE, localIndex);
+        }
+    }
+
+    public static void applySkinChange(MethodVisitor mv, String viewClassName, List<Type> helperTypes) {
+        int size = helperTypes.size();
+        for (int i = 0; i < size; i++) {
+            Type type = helperTypes.get(i);
+
+            mv.visitVarInsn(Opcodes.ALOAD, 0);
+            mv.visitFieldInsn(Opcodes.GETFIELD, viewClassName, type.getClassName().replace(".", "_"), type.getDescriptor());
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, type.getInternalName(), "applySkinChange", "()V", false);
+        }
+    }
+
+    public static class ApplySkinChangeMethodAdapter extends MethodVisitor {
+
+        private String mViewClassName;
+        private List<Type> mHelperTypes;
+
+        public ApplySkinChangeMethodAdapter(MethodVisitor mv, String viewClassName, List<Type> helpertypes) {
+            super(VisitorVersion.VERSION, mv);
+            mViewClassName = viewClassName;
+            mHelperTypes = helpertypes;
+        }
+
+        @Override
+        public void visitInsn(int opcode) {
+            if (opcode == Opcodes.RETURN) {
+                applySkinChange(mv, mViewClassName, mHelperTypes);
+            }
+            super.visitInsn(opcode);
         }
     }
 

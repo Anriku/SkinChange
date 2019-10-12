@@ -3,7 +3,7 @@ package com.anriku.scplugin.visitor;
 
 import com.anriku.scplugin.utils.ConstructorUtils;
 import com.anriku.scplugin.utils.ReplaceNewViewUtils;
-import com.anriku.scplugin.visitor.method.AddHelpersUtils;
+import com.anriku.scplugin.utils.AddHelpersUtils;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
@@ -25,6 +25,7 @@ public class SkinChangeVisitor extends ClassVisitor {
     private List<Type> mHelperTypes = new ArrayList<>();
     private boolean mFirstMethod = true;
     private String mClassName = "";
+    private boolean activityIsSuperClass;
 
     public SkinChangeVisitor(ClassVisitor classVisitor) {
         super(VisitorVersion.VERSION, classVisitor);
@@ -33,6 +34,9 @@ public class SkinChangeVisitor extends ClassVisitor {
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         super.visit(version, access, name, signature, superName, interfaces);
+        if (superName.equals("android/app/Activity")) {
+            activityIsSuperClass = true;
+        }
         mClassName = name;
     }
 
@@ -48,16 +52,40 @@ public class SkinChangeVisitor extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        if (mFirstMethod) {
+        if (mFirstMethod && !mHelperTypes.isEmpty()) {
             AddHelpersUtils.addHelperFields(mHelperTypes, this);
             mFirstMethod = false;
         }
         MethodVisitor methodVisitor = super.visitMethod(access, name, desc, signature, exceptions);
-        if (!mHelperTypes.isEmpty() && name.equals("<init>") && ConstructorUtils.CONSTRUCTORS_DESCRIPTOR.contains(desc)) {
-            return methodVisitor == null ? null : new AddHelpersUtils.InitHelperMethodAdapter(methodVisitor, mClassName, mHelperTypes);
-        } else {
-            return methodVisitor == null ? null : new SkinChangeMethodAdapter(methodVisitor,
-                    (access & Opcodes.ACC_STATIC) != 0, Type.getArgumentsAndReturnSizes(desc));
+
+        if (!mHelperTypes.isEmpty()) {
+            if (name.equals("<init>") && ConstructorUtils.CONSTRUCTORS_DESCRIPTOR.contains(desc)) {
+                return methodVisitor == null ? null : new AddHelpersUtils.InitHelperMethodAdapter(methodVisitor, mClassName, mHelperTypes);
+            } else if (name.equals("applySkinChange")) {
+                return methodVisitor == null ? null : new AddHelpersUtils.ApplySkinChangeMethodAdapter(methodVisitor, mClassName, mHelperTypes);
+            }
+        } else if (activityIsSuperClass && name.equals("onCreate")){
+            return methodVisitor == null ? null : new SetFactoryMethodAdapter(methodVisitor);
+        }
+        return methodVisitor == null ? null : new SkinChangeMethodAdapter(methodVisitor,
+                (access & Opcodes.ACC_STATIC) != 0, Type.getArgumentsAndReturnSizes(desc));
+    }
+
+    public static class SetFactoryMethodAdapter extends MethodVisitor {
+
+        public SetFactoryMethodAdapter(MethodVisitor mv) {
+            super(VisitorVersion.VERSION, mv);
+        }
+
+        @Override
+        public void visitCode() {
+            super.visitCode();
+            mv.visitVarInsn(Opcodes.ALOAD, 0);
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC, "android/view/LayoutInflater", "from", "(Landroid/content/Context;)Landroid/view/LayoutInflater;", false);
+            mv.visitTypeInsn(Opcodes.NEW, "com/anriku/sclib/utils/CustomFactory");
+            mv.visitInsn(Opcodes.DUP);
+            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "com/anriku/sclib/utils/CustomFactory", "<init>", "()V", false);
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anriku/sclib/utils/SCLayoutInflaterCompat", "setFactory2", "(Landroid/view/LayoutInflater;Landroid/view/LayoutInflater$Factory2;)V", false);
         }
     }
 

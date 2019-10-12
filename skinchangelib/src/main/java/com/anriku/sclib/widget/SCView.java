@@ -12,8 +12,10 @@ import com.anriku.sclib.helpers.SCBackgroundHelper;
 /**
  * Created by anriku on 2019-10-05.
  */
-@SkinChangeFunctionArray(helperClassesWholeName = {SCBackgroundHelper.class})
-public class SCView extends View {
+@SkinChangeFunctionArray(helperClassesWholeName = {
+        SCBackgroundHelper.class
+})
+public class SCView extends View implements SkinChange {
 
     public SCView(Context context) {
         super(context);
@@ -32,5 +34,10 @@ public class SCView extends View {
             parameterIndexes = {0})
     public void setBackgroundResource(int resid) {
         super.setBackgroundResource(resid);
+    }
+
+    @Override
+    public void applySkinChange() {
+
     }
 }
