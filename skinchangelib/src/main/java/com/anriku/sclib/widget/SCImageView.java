@@ -5,8 +5,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.anriku.sclib.annotation.SkinChangeFunction;
-import com.anriku.sclib.annotation.SkinChangeFunctionArray;
+import com.anriku.sclib.annotation.HelperClassToMethod;
+import com.anriku.sclib.annotation.InitConstructor;
+import com.anriku.sclib.annotation.SkinChangeView;
 import com.anriku.sclib.helpers.SCBackgroundHelper;
 import com.anriku.sclib.helpers.SCImageHelper;
 
@@ -15,9 +16,21 @@ import com.anriku.sclib.helpers.SCImageHelper;
  */
 
 @SuppressLint("AppCompatCustomView")
-@SkinChangeFunctionArray(helperClassesWholeName = {
-        SCBackgroundHelper.class,
-        SCImageHelper.class
+@SkinChangeView(helperClassToMethodName = {
+        @HelperClassToMethod(
+                helperClass = SCBackgroundHelper.class,
+                methodNameAndDescriptor = {"setBackgroundResource", "(I)V"},
+                parameterIndexes = {0}),
+        @HelperClassToMethod(
+                helperClass = SCImageHelper.class,
+                methodNameAndDescriptor = {"setImageResource", "(I)V"},
+                parameterIndexes = {0}),
+}, initConstructors = {
+        @InitConstructor(
+                constructorDescriptor = "(Landroid/content/Context;Landroid/util/AttributeSet;I)V",
+                attrsIndex = 1,
+                defStyleAttrIndex = 2
+        )
 })
 public class SCImageView extends ImageView implements SkinChange {
 
@@ -31,20 +44,6 @@ public class SCImageView extends ImageView implements SkinChange {
 
     public SCImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    @Override
-    @SkinChangeFunction(helperClassWholeName = SCBackgroundHelper.class,
-            parameterIndexes = {0})
-    public void setBackgroundResource(int resid) {
-        super.setBackgroundResource(resid);
-    }
-
-    @Override
-    @SkinChangeFunction(helperClassWholeName = SCImageHelper.class,
-            parameterIndexes = {0})
-    public void setImageResource(int resId) {
-        super.setImageResource(resId);
     }
 
     @Override

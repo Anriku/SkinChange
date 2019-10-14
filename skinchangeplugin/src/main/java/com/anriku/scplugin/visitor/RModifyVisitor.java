@@ -1,6 +1,8 @@
 package com.anriku.scplugin.visitor;
 
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -16,6 +18,14 @@ import java.util.HashMap;
 public class RModifyVisitor extends ClassVisitor {
 
     private HashMap<String, Integer> mStringToInteger;
+
+    public static byte[] getHandleBytes(byte[] originBytes, HashMap<String, Integer> stringToInteger) {
+        ClassReader reader = new ClassReader(originBytes);
+        ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
+        ClassVisitor visitor = new RModifyVisitor(writer, stringToInteger);
+        reader.accept(visitor, 0);
+        return writer.toByteArray();
+    }
 
     public RModifyVisitor(ClassVisitor cv, HashMap<String, Integer> stringToInteger) {
         super(VisitorVersion.VERSION, cv);

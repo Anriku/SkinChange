@@ -1,6 +1,8 @@
 package com.anriku.scplugin.visitor;
 
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
@@ -15,6 +17,14 @@ public class AppCompatViewInflaterVisitor extends ClassVisitor {
     // AppCompatViewInflaterUtils的全限定名
     public static final String APPCOMPAT_VIEW_INFLATER_UTILS = "com/anriku/sclib/utils/CreateViewUtils";
     public static final String PACKAGE_NAME = "com.anriku.sclib.widget";
+
+    public static byte[] getHandleBytes(byte[] originBytes) {
+        ClassReader reader = new ClassReader(originBytes);
+        ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
+        ClassVisitor visitor = new AppCompatViewInflaterVisitor(writer);
+        reader.accept(visitor, 0);
+        return writer.toByteArray();
+    }
 
     public AppCompatViewInflaterVisitor(ClassVisitor cv) {
         super(VisitorVersion.VERSION, cv);

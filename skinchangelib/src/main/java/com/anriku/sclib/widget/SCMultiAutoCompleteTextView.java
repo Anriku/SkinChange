@@ -1,11 +1,13 @@
 package com.anriku.sclib.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.MultiAutoCompleteTextView;
 
-import com.anriku.sclib.annotation.SkinChangeFunction;
-import com.anriku.sclib.annotation.SkinChangeFunctionArray;
+import com.anriku.sclib.annotation.HelperClassToMethod;
+import com.anriku.sclib.annotation.InitConstructor;
+import com.anriku.sclib.annotation.SkinChangeView;
 import com.anriku.sclib.helpers.SCBackgroundHelper;
 import com.anriku.sclib.helpers.SCCompoundDrawablesHelper;
 import com.anriku.sclib.helpers.SCRelativeCompoundDrawablesHelper;
@@ -14,11 +16,34 @@ import com.anriku.sclib.helpers.SCTextAppearanceHelper;
 /**
  * Created by anriku on 2019-10-12.
  */
-@SkinChangeFunctionArray(helperClassesWholeName = {
-        SCTextAppearanceHelper.class,
-        SCRelativeCompoundDrawablesHelper.class,
-        SCCompoundDrawablesHelper.class,
-        SCBackgroundHelper.class
+@SuppressLint("AppCompatCustomView")
+@SkinChangeView(helperClassToMethodName = {
+        @HelperClassToMethod(
+                helperClass = SCTextAppearanceHelper.class,
+                methodNameAndDescriptor = {"setTextAppearance", "(I)V"},
+                parameterIndexes = {0}),
+        @HelperClassToMethod(
+                helperClass = SCTextAppearanceHelper.class,
+                methodNameAndDescriptor = {"setTextAppearance", "(Landroid/content/Context;I)V"},
+                parameterIndexes = {1}),
+        @HelperClassToMethod(
+                helperClass = SCRelativeCompoundDrawablesHelper.class,
+                methodNameAndDescriptor = {"setCompoundDrawablesRelativeWithIntrinsicBounds", "(IIII)V"},
+                parameterIndexes = {0, 1, 2, 3}),
+        @HelperClassToMethod(
+                helperClass = SCCompoundDrawablesHelper.class,
+                methodNameAndDescriptor = {"setCompoundDrawablesWithIntrinsicBounds", "(IIII)V"},
+                parameterIndexes = {0, 1, 2, 3}),
+        @HelperClassToMethod(
+                helperClass = SCBackgroundHelper.class,
+                methodNameAndDescriptor = {"setBackgroundResource", "(I)V"},
+                parameterIndexes = {0})
+}, initConstructors = {
+        @InitConstructor(
+                constructorDescriptor = "(Landroid/content/Context;Landroid/util/AttributeSet;I)V",
+                attrsIndex = 1,
+                defStyleAttrIndex = 2
+        )
 })
 public class SCMultiAutoCompleteTextView extends MultiAutoCompleteTextView implements SkinChange {
     public SCMultiAutoCompleteTextView(Context context) {
@@ -32,41 +57,6 @@ public class SCMultiAutoCompleteTextView extends MultiAutoCompleteTextView imple
     public SCMultiAutoCompleteTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
-    @Override
-    @SkinChangeFunction(helperClassWholeName = SCTextAppearanceHelper.class,
-            parameterIndexes = {0})
-    public void setTextAppearance(int resId) {
-        super.setTextAppearance(resId);
-    }
-
-    @Override
-    @SkinChangeFunction(helperClassWholeName = SCTextAppearanceHelper.class,
-            parameterIndexes = {1})
-    public void setTextAppearance(Context context, int resId) {
-        super.setTextAppearance(context, resId);
-    }
-
-    @Override
-    @SkinChangeFunction(helperClassWholeName = SCRelativeCompoundDrawablesHelper.class,
-            parameterIndexes = {0, 1, 2, 3})
-    public void setCompoundDrawablesRelativeWithIntrinsicBounds(int start, int top, int end, int bottom) {
-        super.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom);
-    }
-
-    @Override
-    @SkinChangeFunction(helperClassWholeName = SCCompoundDrawablesHelper.class,
-            parameterIndexes = {0, 1, 2, 3})
-    public void setCompoundDrawablesWithIntrinsicBounds(int left, int top, int right, int bottom) {
-        super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom);
-    }
-
-    @Override
-    @SkinChangeFunction(helperClassWholeName = SCBackgroundHelper.class, parameterIndexes = {0})
-    public void setBackgroundResource(int resId) {
-        super.setBackgroundResource(resId);
-    }
-
 
     @Override
     public void applySkinChange() {

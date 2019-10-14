@@ -2,7 +2,9 @@ package com.anriku.scplugin.visitor;
 
 import com.anriku.scplugin.dump.RMapsDump;
 
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
@@ -25,6 +27,14 @@ public class ResUtilsVisitor extends ClassVisitor {
             + RMapsDump.RMAPS + "_style";
 
     private String mResUtilsWholeName = "com/anriku/sclib/utils/ResUtils";
+
+    public static byte[] getHandleBytes(byte[] originBytes) {
+        ClassReader reader = new ClassReader(originBytes);
+        ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
+        ClassVisitor visitor = new ResUtilsVisitor(writer);
+        reader.accept(visitor, 0);
+        return writer.toByteArray();
+    }
 
     public ResUtilsVisitor(ClassVisitor cv) {
         super(VisitorVersion.VERSION, cv);

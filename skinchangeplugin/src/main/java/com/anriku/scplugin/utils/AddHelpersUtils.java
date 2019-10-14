@@ -1,7 +1,6 @@
 package com.anriku.scplugin.utils;
 
-import com.anriku.scplugin.utils.ConstructorUtils;
-import com.anriku.scplugin.utils.IntLdcUtils;
+import com.anriku.scplugin.visitor.SkinChangeViewVisitor;
 import com.anriku.scplugin.visitor.VisitorVersion;
 
 import org.objectweb.asm.ClassVisitor;
@@ -11,7 +10,8 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.objectweb.asm.Opcodes.T_INT;
 
@@ -21,73 +21,157 @@ import static org.objectweb.asm.Opcodes.T_INT;
 
 public class AddHelpersUtils {
 
-    public static void addHelperFields(List<Type> helperTypes, ClassVisitor cv) {
-        int size = helperTypes.size();
-        for (int i = 0; i < size; i++) {
-            Type type = helperTypes.get(i);
+    /**
+     * 进行SCHelper所有子类的域的添加
+     */
+    public static void addHelperFields(Set<Type> helperTypes, ClassVisitor cv) {
+        for (Type type : helperTypes) {
             FieldVisitor fv = cv.visitField(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL,
                     type.getClassName().replace(".", "_"), type.getDescriptor(), null, null);
             fv.visitEnd();
         }
     }
 
-    public static void secureRecordAndReplaceResIds(boolean staticMethod, MethodVisitor mv, String className, Type type, int[] parameterIndexes, int parameterCount) {
-        int arrayIndex = parameterCount + 1;
+    public static void secureRecordAndReplaceResIds(boolean staticMethod, MethodVisitor mv, String className,
+                                                    Type type, int[] replaceParametersIndex, String methodDesc) {
+        int newResIdsArrayIndex = LocalVarUtils.getLocalVarMin(staticMethod, methodDesc) + 1;
+        int[] parametersIndex = LocalVarUtils.getAllParametersIndex(staticMethod, methodDesc);
 
+        // 进行HelperUtils的secureRecordAndReplaceResIds方法的调用
+        Label l0 = new Label();
+        mv.visitLabel(l0);
         mv.visitVarInsn(Opcodes.ALOAD, 0);
         mv.visitFieldInsn(Opcodes.GETFIELD, className, type.getClassName().replace(".", "_"), type.getDescriptor());
-        IntLdcUtils.loadIntValue(mv, parameterIndexes.length);
+        IntLdcUtils.loadIntValue(mv, replaceParametersIndex.length);
         mv.visitIntInsn(Opcodes.NEWARRAY, T_INT);
-
-        for (int i = 0; i < parameterIndexes.length; i++) {
+        // 将所有需要替换资源的参数添加到数组中去
+        for (int i = 0; i < replaceParametersIndex.length; i++) {
             mv.visitInsn(Opcodes.DUP);
             IntLdcUtils.loadIntValue(mv, i);
-            int localIndex = parameterIndexes[i];
-            if (!staticMethod) {
-                localIndex++;
-            }
-            mv.visitVarInsn(Opcodes.ILOAD, localIndex);
+            mv.visitVarInsn(Opcodes.ILOAD, parametersIndex[replaceParametersIndex[i]]);
             mv.visitInsn(Opcodes.IASTORE);
         }
-
         mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anriku/sclib/utils/HelperUtils", "secureRecordAndReplaceResIds", "(Lcom/anriku/sclib/helpers/SCHelper;[I)[I", false);
-        mv.visitVarInsn(Opcodes.ASTORE, arrayIndex);
-        Label l1 = new Label();
-        mv.visitLabel(l1);
+        mv.visitVarInsn(Opcodes.ASTORE, newResIdsArrayIndex);
 
-        for (int i = 0; i < parameterIndexes.length; i++) {
-            mv.visitVarInsn(Opcodes.ALOAD, arrayIndex);
+        // 将HelperUtils的secureRecordAndReplaceResIds方法返回的结果赋值给参数
+        for (int i = 0; i < replaceParametersIndex.length; i++) {
+            Label l1 = new Label();
+            mv.visitLabel(l1);
+            mv.visitVarInsn(Opcodes.ALOAD, newResIdsArrayIndex);
             IntLdcUtils.loadIntValue(mv, i);
             mv.visitInsn(Opcodes.IALOAD);
-
-            int localIndex = parameterIndexes[i];
-            if (!staticMethod) {
-                localIndex++;
-            }
-            mv.visitVarInsn(Opcodes.ISTORE, localIndex);
+            mv.visitVarInsn(Opcodes.ISTORE, parametersIndex[replaceParametersIndex[i]]);
         }
     }
 
-    public static void applySkinChange(MethodVisitor mv, String viewClassName, List<Type> helperTypes) {
-        int size = helperTypes.size();
-        for (int i = 0; i < size; i++) {
-            Type type = helperTypes.get(i);
+    /**
+     * 进行构造函数的添加
+     *
+     * @param cv               {@link ClassVisitor}
+     * @param className        类的全限定名
+     * @param superClassName   父类的全限定名
+     * @param mHelpersType     所有该类使用的SCHelper的子类
+     * @param initConstructors 所有需要添加的构造函数
+     */
+    public static void addInitConstructor(ClassVisitor cv, String className, String superClassName, Set<Type> mHelpersType,
+                                          Map<String, SkinChangeViewVisitor.AttrsAndDefStyleAttrIndex> initConstructors) {
+        Set<Map.Entry<String, SkinChangeViewVisitor.AttrsAndDefStyleAttrIndex>> entries = initConstructors.entrySet();
+        for (Map.Entry<String, SkinChangeViewVisitor.AttrsAndDefStyleAttrIndex> entry : entries) {
+            String desc = entry.getKey();
+            SkinChangeViewVisitor.AttrsAndDefStyleAttrIndex attrsAndDefStyleAttrIndex = entry.getValue();
+            Type[] parametersType = Type.getArgumentTypes(desc);
+            int[] parametersIndex = LocalVarUtils.getAllParametersIndex(false, desc);
 
+            MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, "<init>", desc, null, null);
+            mv.visitCode();
+            // 调用父类的构造方法
+            Label l0 = new Label();
+            mv.visitLabel(l0);
             mv.visitVarInsn(Opcodes.ALOAD, 0);
-            mv.visitFieldInsn(Opcodes.GETFIELD, viewClassName, type.getClassName().replace(".", "_"), type.getDescriptor());
-            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, type.getInternalName(), "applySkinChange", "()V", false);
+            for (int i = 0; i < parametersType.length; i++) {
+                Type type = parametersType[i];
+                VarInsnUtils.visitLoadVarInsn(mv, type, parametersIndex[i]);
+            }
+            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, superClassName, "<init>", desc, false);
+            // 对所有的SCHelper的子类进行初始化
+            for (Type type : mHelpersType) {
+                InitHelperMethodAdapter.initHelper(mv, type, className, attrsAndDefStyleAttrIndex.getAttrsIndex(), attrsAndDefStyleAttrIndex.getDefStyleAttrIndex());
+            }
+
+            Label l1 = new Label();
+            mv.visitLabel(l1);
+            mv.visitInsn(Opcodes.RETURN);
+
+            Label l2 = new Label();
+            mv.visitLabel(l2);
+            mv.visitMaxs(0, 0);
+            mv.visitEnd();
         }
     }
 
+    public static void addMethod(ClassVisitor cv, String className, String superClassName,
+                                 Map<String, SkinChangeViewVisitor.HelperClassAndParameterIndexes> methodsNeedHandle) {
+        Set<Map.Entry<String, SkinChangeViewVisitor.HelperClassAndParameterIndexes>> entries = methodsNeedHandle.entrySet();
+        for (Map.Entry<String, SkinChangeViewVisitor.HelperClassAndParameterIndexes> entry : entries) {
+            String methodNameAndDesc = entry.getKey();
+            int index = methodNameAndDesc.indexOf("(");
+            String name = methodNameAndDesc.substring(0, index);
+            String desc = methodNameAndDesc.substring(index);
+            Type[] parametersType = Type.getArgumentTypes(desc);
+            int[] parametersIndex = LocalVarUtils.getAllParametersIndex(false, desc);
+            Type returnType = Type.getReturnType(desc);
+
+            SkinChangeViewVisitor.HelperClassAndParameterIndexes helperClassAndParameterIndexes = entry.getValue();
+            Type helperType = helperClassAndParameterIndexes.getHelperClassType();
+            int[] replaceParametersIndex = helperClassAndParameterIndexes.getParameterIndexes();
+
+            // 添加方法
+            MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, name, desc, null, null);
+            secureRecordAndReplaceResIds(false, mv, className, helperType, replaceParametersIndex, desc);
+            mv.visitCode();
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+            mv.visitVarInsn(Opcodes.ALOAD, 0);
+            for (int i = 0; i < parametersType.length; i++) {
+                Type type = parametersType[i];
+                VarInsnUtils.visitLoadVarInsn(mv, type, parametersIndex[i]);
+            }
+            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, superClassName, name, desc, false);
+            if (returnType.getDescriptor().equals("V")) {
+                Label l2 = new Label();
+                mv.visitLabel(l2);
+                mv.visitInsn(Opcodes.RETURN);
+            } else {
+                VarInsnUtils.visitReturnInsn(mv, returnType);
+            }
+
+            Label l3 = new Label();
+            mv.visitLabel(l3);
+
+            String returnTypeDesc = returnType.getDescriptor();
+            int maxStack = 1;
+            if (returnTypeDesc.equals("D") || returnTypeDesc.equals("J")) {
+                maxStack = 2;
+            }
+
+            mv.visitMaxs(maxStack, LocalVarUtils.getLocalVarMin(false, desc) + 1);
+            mv.visitEnd();
+        }
+    }
+
+    /**
+     * 对View的applySkinChange方法进行调用所有SCHelper子类的applyChange的方法的处理
+     */
     public static class ApplySkinChangeMethodAdapter extends MethodVisitor {
 
         private String mViewClassName;
-        private List<Type> mHelperTypes;
+        private Set<Type> mHelperTypes;
 
-        public ApplySkinChangeMethodAdapter(MethodVisitor mv, String viewClassName, List<Type> helpertypes) {
+        public ApplySkinChangeMethodAdapter(MethodVisitor mv, String viewClassName, Set<Type> helperTypes) {
             super(VisitorVersion.VERSION, mv);
             mViewClassName = viewClassName;
-            mHelperTypes = helpertypes;
+            mHelperTypes = helperTypes;
         }
 
         @Override
@@ -97,57 +181,104 @@ public class AddHelpersUtils {
             }
             super.visitInsn(opcode);
         }
+
+        public static void applySkinChange(MethodVisitor mv, String viewClassName, Set<Type> helperTypes) {
+            for (Type type : helperTypes) {
+                Label l0 = new Label();
+                mv.visitLabel(l0);
+                mv.visitVarInsn(Opcodes.ALOAD, 0);
+                mv.visitFieldInsn(Opcodes.GETFIELD, viewClassName, type.getClassName().replace(".", "_"), type.getDescriptor());
+                mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, type.getInternalName(), "applySkinChange", "()V", false);
+            }
+        }
     }
 
+    /**
+     * 用于在View的构造器中进行SCHelper所有子类的初始化
+     */
     public static class InitHelperMethodAdapter extends MethodVisitor {
 
-        private boolean mInvokeAnotherAttrConstructor;
-        private List<Type> mHelperTypes;
+        private Set<Type> mHelperTypes;
         private String mClassName;
+        private SkinChangeViewVisitor.AttrsAndDefStyleAttrIndex mAttrsAndDefStyleAttrIndex;
 
-        public InitHelperMethodAdapter(MethodVisitor mv, String className, List<Type> helperTypes) {
+        public InitHelperMethodAdapter(MethodVisitor mv, String className, Set<Type> helperTypes, SkinChangeViewVisitor.AttrsAndDefStyleAttrIndex attrsAndDefStyleAttrIndex) {
             super(VisitorVersion.VERSION, mv);
             mClassName = className;
             mHelperTypes = helperTypes;
-        }
-
-        @Override
-        public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-            if (mClassName.equals(owner) && name.equals("<init>") && ConstructorUtils.CONSTRUCTORS_DESCRIPTOR.contains(desc)) {
-                mInvokeAnotherAttrConstructor = true;
-            }
-            super.visitMethodInsn(opcode, owner, name, desc, itf);
+            mAttrsAndDefStyleAttrIndex = attrsAndDefStyleAttrIndex;
         }
 
         @Override
         public void visitInsn(int opcode) {
-            if (opcode == Opcodes.RETURN && !mInvokeAnotherAttrConstructor) {
-                int size = mHelperTypes.size();
-                for (int i = 0; i < size; i++) {
-                    Type type = mHelperTypes.get(i);
-                    initHelper(type);
+            if (opcode == Opcodes.RETURN) {
+                for (Type type : mHelperTypes) {
+                    initHelper(mv, type, mClassName, mAttrsAndDefStyleAttrIndex.getAttrsIndex(), mAttrsAndDefStyleAttrIndex.getDefStyleAttrIndex());
                 }
             }
             super.visitInsn(opcode);
         }
 
-
-        private void initHelper(Type type) {
+        public static void initHelper(MethodVisitor mv, Type type, String className, int attrsIndex, int defStyleIndex) {
             String helperInternalName = type.getInternalName();
             String fieldName = type.getClassName().replace(".", "_");
             String helperDescriptor = type.getDescriptor();
 
+            // new SCHelper子类
+            Label l0 = new Label();
+            mv.visitLabel(l0);
             mv.visitVarInsn(Opcodes.ALOAD, 0);
             mv.visitTypeInsn(Opcodes.NEW, helperInternalName);
             mv.visitInsn(Opcodes.DUP);
             mv.visitVarInsn(Opcodes.ALOAD, 0);
             mv.visitMethodInsn(Opcodes.INVOKESPECIAL, helperInternalName, "<init>", "(Landroid/view/View;)V", false);
-            mv.visitFieldInsn(Opcodes.PUTFIELD, mClassName, fieldName, helperDescriptor);
+            mv.visitFieldInsn(Opcodes.PUTFIELD, className, fieldName, helperDescriptor);
+
+            // 调用SCHelper子类的loadFromAttributes方法
+            Label l1 = new Label();
+            mv.visitLabel(l1);
             mv.visitVarInsn(Opcodes.ALOAD, 0);
-            mv.visitFieldInsn(Opcodes.GETFIELD, mClassName, fieldName, helperDescriptor);
-            mv.visitVarInsn(Opcodes.ALOAD, 2);
-            mv.visitVarInsn(Opcodes.ILOAD, 3);
+            mv.visitFieldInsn(Opcodes.GETFIELD, className, fieldName, helperDescriptor);
+            // attrs变量加入操作数栈
+            mv.visitVarInsn(Opcodes.ALOAD, attrsIndex + 1);
+
+            // defStyleAttr变量加入操作数栈，如果没有该变量就行将0加入操作数栈
+            int defIndex = defStyleIndex;
+            if (defIndex != -1) {
+                mv.visitVarInsn(Opcodes.ILOAD, defIndex + 1);
+            } else {
+                IntLdcUtils.loadIntValue(mv, 0);
+            }
+
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, helperInternalName, "loadFromAttributes", "(Landroid/util/AttributeSet;I)V", false);
+        }
+    }
+
+    /**
+     * 给指定的方法执行SCHelper子类的recordAndReplaceResIds方法进行资源的替换
+     */
+    public static class ResourceReplaceMethodAdapter extends MethodVisitor {
+
+        private boolean mStaticMethod;
+        private String mViewClassName;
+        private SkinChangeViewVisitor.HelperClassAndParameterIndexes mHelperClassAndParameterIndexes;
+        private String mMethodDesc;
+
+
+        public ResourceReplaceMethodAdapter(MethodVisitor mv, boolean staticMethod, String viewClassName,
+                                            SkinChangeViewVisitor.HelperClassAndParameterIndexes helperClassAndParameterIndexes, String methodDesc) {
+            super(VisitorVersion.VERSION, mv);
+            mStaticMethod = staticMethod;
+            mViewClassName = viewClassName;
+            mHelperClassAndParameterIndexes = helperClassAndParameterIndexes;
+            mMethodDesc = methodDesc;
+        }
+
+        @Override
+        public void visitCode() {
+            secureRecordAndReplaceResIds(mStaticMethod, mv, mViewClassName, mHelperClassAndParameterIndexes.getHelperClassType(),
+                    mHelperClassAndParameterIndexes.getParameterIndexes(), mMethodDesc);
+            super.visitCode();
         }
     }
 }

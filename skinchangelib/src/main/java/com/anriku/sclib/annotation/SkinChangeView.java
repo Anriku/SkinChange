@@ -2,6 +2,8 @@ package com.anriku.sclib.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.CLASS;
@@ -11,9 +13,10 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
  */
 @Retention(CLASS)
 @Target({TYPE})
-public @interface SkinChangeFunctionArray {
+public @interface SkinChangeView {
 
-    // 声明某个类使用到的所有SCHelper的子类的全限定名
-    Class[] helperClassesWholeName();
+    HelperClassToMethod[] helperClassToMethodName();
+
+    InitConstructor[] initConstructors();
 
 }

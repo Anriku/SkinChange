@@ -5,8 +5,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.SeekBar;
 
-import com.anriku.sclib.annotation.SkinChangeFunction;
-import com.anriku.sclib.annotation.SkinChangeFunctionArray;
+import com.anriku.sclib.annotation.HelperClassToMethod;
+import com.anriku.sclib.annotation.InitConstructor;
+import com.anriku.sclib.annotation.SkinChangeView;
 import com.anriku.sclib.helpers.SCBackgroundHelper;
 
 /**
@@ -14,8 +15,17 @@ import com.anriku.sclib.helpers.SCBackgroundHelper;
  */
 
 @SuppressLint("AppCompatCustomView")
-@SkinChangeFunctionArray(helperClassesWholeName = {
-        SCBackgroundHelper.class
+@SkinChangeView(helperClassToMethodName = {
+        @HelperClassToMethod(
+                helperClass = SCBackgroundHelper.class,
+                methodNameAndDescriptor = {"setBackgroundResource", "(I)V"},
+                parameterIndexes = {0})
+}, initConstructors = {
+        @InitConstructor(
+                constructorDescriptor = "(Landroid/content/Context;Landroid/util/AttributeSet;I)V",
+                attrsIndex = 1,
+                defStyleAttrIndex = 2
+        )
 })
 public class SCSeekBar extends SeekBar implements SkinChange {
     public SCSeekBar(Context context) {
@@ -28,12 +38,6 @@ public class SCSeekBar extends SeekBar implements SkinChange {
 
     public SCSeekBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    @Override
-    @SkinChangeFunction(helperClassWholeName = SCBackgroundHelper.class, parameterIndexes = {0})
-    public void setBackgroundResource(int resId) {
-        super.setBackgroundResource(resId);
     }
 
     @Override

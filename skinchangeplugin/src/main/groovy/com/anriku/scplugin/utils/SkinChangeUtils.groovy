@@ -22,8 +22,10 @@ import com.anriku.scplugin.dump.SCAppCompatTextViewDump
 import com.anriku.scplugin.dump.SCAppCompatToggleButtonDump
 import com.anriku.scplugin.dump.SCCompatMultiAutoCompleteTextViewDump
 import com.anriku.scplugin.extension.SkinChangeExtension
+import com.anriku.scplugin.visitor.ActivityVisitor
 import com.anriku.scplugin.visitor.AppCompatViewInflaterVisitor
-import com.anriku.scplugin.visitor.SkinChangeVisitor
+import com.anriku.scplugin.visitor.NewViewReplaceVisitor
+import com.anriku.scplugin.visitor.SkinChangeViewVisitor
 import com.anriku.scplugin.visitor.RModifyVisitor
 import com.anriku.scplugin.visitor.ResUtilsVisitor
 
@@ -58,17 +60,10 @@ class SkinChangeUtils {
                     println '----------- handleDirectoryInput: <' + name + '> -----------'
                     if (checkRInnerClassFile(name)) {
                         // 对R文件中的每个内部类文件的资源进行记录
-                        ClassReader classReader = new ClassReader(file.bytes)
-                        ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-                        ClassVisitor cv = new RModifyVisitor(classWriter, getStringToIntegerHashMap(name))
-                        classReader.accept(cv, 0)
-                        dumpFile(classWriter.toByteArray(), file.parentFile.absolutePath + File.separator + name)
+                        dumpFile(RModifyVisitor.getHandleBytes(file.bytes, getStringToIntegerHashMap(name)), file.parentFile.absolutePath + File.separator + name)
                     } else {
-                        ClassReader classReader = new ClassReader(file.bytes)
-                        ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-                        ClassVisitor cv = new SkinChangeVisitor(classWriter)
-                        classReader.accept(cv, 0)
-                        dumpFile(classWriter.toByteArray(), file.parentFile.absolutePath + File.separator + name)
+                        dumpFile(SkinChangeViewVisitor.getHandleBytes(NewViewReplaceVisitor.getHandleBytes(ActivityVisitor.getHandleBytes(file.bytes))),
+                                file.parentFile.absolutePath + File.separator + name)
                     }
                 }
             }
@@ -110,28 +105,13 @@ class SkinChangeUtils {
                     println '----------- handleJarInputs: <' + entryName + '> -----------'
                     if (checkResUtilsClass(entryName)) {
                         jarOutputStream.putNextEntry(newJarEntry)
-                        ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
-                        ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-                        ClassVisitor cv = new ResUtilsVisitor(classWriter)
-                        classReader.accept(cv, 0)
-                        byte[] code = classWriter.toByteArray()
-                        jarOutputStream.write(code)
+                        jarOutputStream.write(ResUtilsVisitor.getHandleBytes(IOUtils.toByteArray(inputStream)))
                     } else if (checkAppCompatViewInflaterClassFile(entryName)) {
                         jarOutputStream.putNextEntry(newJarEntry)
-                        ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
-                        ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-                        ClassVisitor cv = new AppCompatViewInflaterVisitor(classWriter)
-                        classReader.accept(cv, 0)
-                        byte[] code = classWriter.toByteArray()
-                        jarOutputStream.write(code)
+                        jarOutputStream.write(AppCompatViewInflaterVisitor.getHandleBytes(IOUtils.toByteArray(inputStream)))
                     } else if (checkIsProjectsFile(jarInput.file)) {
                         jarOutputStream.putNextEntry(newJarEntry)
-                        ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
-                        ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-                        ClassVisitor cv = new SkinChangeVisitor(classWriter)
-                        classReader.accept(cv, 0)
-                        byte[] code = classWriter.toByteArray()
-                        jarOutputStream.write(code)
+                        jarOutputStream.write(SkinChangeViewVisitor.getHandleBytes(NewViewReplaceVisitor.getHandleBytes(ActivityVisitor.getHandleBytes(IOUtils.toByteArray(inputStream)))))
                     } else {
                         jarOutputStream.putNextEntry(newJarEntry)
                         jarOutputStream.write(IOUtils.toByteArray(inputStream))

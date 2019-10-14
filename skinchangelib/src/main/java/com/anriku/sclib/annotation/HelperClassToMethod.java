@@ -10,15 +10,17 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.CLASS;
 
 /**
- * Created by anriku on 2019-10-06.
+ * Created by anriku on 2019-10-14.
  */
+
 @Retention(CLASS)
 @Target({PARAMETER, METHOD, LOCAL_VARIABLE, FIELD})
-public @interface SkinChangeFunction {
+public @interface HelperClassToMethod {
 
-    // 继承自SCHelper的子类的全限定名
-    Class helperClassWholeName();
+    Class helperClass();
 
-    // 需要作为SCHelper的子类的onResourcesSet方法的参数在方法中的index
+    String[] methodNameAndDescriptor();
+
     int[] parameterIndexes();
+
 }
