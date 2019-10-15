@@ -1,6 +1,6 @@
 package com.anriku.scplugin.visitor;
 
-import com.anriku.scplugin.utils.SCLibClass;
+import com.anriku.scplugin.utils.Constants;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -65,10 +65,10 @@ public class ActivityVisitor extends ClassVisitor {
                 mv.visitLabel(l0);
                 mv.visitVarInsn(Opcodes.ALOAD, 0);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "android/view/LayoutInflater", "from", "(Landroid/content/Context;)Landroid/view/LayoutInflater;", false);
-                mv.visitTypeInsn(Opcodes.NEW, SCLibClass.CUSTOM_FACTORY);
+                mv.visitTypeInsn(Opcodes.NEW, Constants.CUSTOM_FACTORY);
                 mv.visitInsn(Opcodes.DUP);
-                mv.visitMethodInsn(Opcodes.INVOKESPECIAL, SCLibClass.CUSTOM_FACTORY, "<init>", "()V", false);
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, SCLibClass.SC_LAYOUT_INFLATER_COMPACT, "setFactory2", "(Landroid/view/LayoutInflater;Landroid/view/LayoutInflater$Factory2;)V", false);
+                mv.visitMethodInsn(Opcodes.INVOKESPECIAL, Constants.CUSTOM_FACTORY, "<init>", "()V", false);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, Constants.SC_LAYOUT_INFLATER_COMPACT, "setFactory2", "(Landroid/view/LayoutInflater;Landroid/view/LayoutInflater$Factory2;)V", false);
                 Label l1 = new Label();
                 mv.visitLabel(l1);
                 mv.visitVarInsn(Opcodes.ALOAD, 0);
@@ -101,10 +101,10 @@ public class ActivityVisitor extends ClassVisitor {
             mv.visitLabel(l0);
             mv.visitVarInsn(Opcodes.ALOAD, 0);
             mv.visitMethodInsn(Opcodes.INVOKESTATIC, "android/view/LayoutInflater", "from", "(Landroid/content/Context;)Landroid/view/LayoutInflater;", false);
-            mv.visitTypeInsn(Opcodes.NEW, SCLibClass.CUSTOM_FACTORY);
+            mv.visitTypeInsn(Opcodes.NEW, Constants.CUSTOM_FACTORY);
             mv.visitInsn(Opcodes.DUP);
-            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, SCLibClass.CUSTOM_FACTORY, "<init>", "()V", false);
-            mv.visitMethodInsn(Opcodes.INVOKESTATIC, SCLibClass.SC_LAYOUT_INFLATER_COMPACT, "setFactory2", "(Landroid/view/LayoutInflater;Landroid/view/LayoutInflater$Factory2;)V", false);
+            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, Constants.CUSTOM_FACTORY, "<init>", "()V", false);
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC, Constants.SC_LAYOUT_INFLATER_COMPACT, "setFactory2", "(Landroid/view/LayoutInflater;Landroid/view/LayoutInflater$Factory2;)V", false);
         }
     }
 }

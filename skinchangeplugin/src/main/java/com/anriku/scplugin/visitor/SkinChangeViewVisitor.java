@@ -2,7 +2,7 @@ package com.anriku.scplugin.visitor;
 
 
 import com.anriku.scplugin.utils.AddHelpersUtils;
-import com.anriku.scplugin.utils.SCLibClass;
+import com.anriku.scplugin.utils.Constants;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
@@ -61,7 +61,7 @@ public class SkinChangeViewVisitor extends ClassVisitor {
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
         AnnotationVisitor annotationVisitor = super.visitAnnotation(desc, visible);
-        if (desc.equals(SCLibClass.SKIN_CHANGE_VIEW_DESCRIPTOR)) {
+        if (desc.equals(Constants.SKIN_CHANGE_VIEW_DESCRIPTOR)) {
             return annotationVisitor == null ? null : new SkinChangeViewAnnotationAdapter(annotationVisitor);
         }
         return annotationVisitor;

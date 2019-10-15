@@ -10,10 +10,12 @@ import org.objectweb.asm.Opcodes;
 
 /**
  * 对代码中所有的new相应View的过程改成new代理View的过程。
- *
+ * <p>
  * Created by anriku on 2019-10-14.
  */
 public class NewViewReplaceVisitor extends ClassVisitor {
+
+    private boolean mWidget;
 
     public static byte[] getHandleBytes(byte[] originBytes) {
         ClassReader reader = new ClassReader(originBytes);
@@ -23,6 +25,14 @@ public class NewViewReplaceVisitor extends ClassVisitor {
         return writer.toByteArray();
     }
 
+    @Override
+    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        super.visit(version, access, name, signature, superName, interfaces);
+        if (ReplaceNewViewUtils.sNeedReplaceViews.get(superName) != null) {
+            mWidget = true;
+        }
+    }
+
     public NewViewReplaceVisitor(ClassVisitor cv) {
         super(VisitorVersion.VERSION, cv);
     }
@@ -30,7 +40,10 @@ public class NewViewReplaceVisitor extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodVisitor methodVisitor = super.visitMethod(access, name, desc, signature, exceptions);
-        return methodVisitor == null ? null : new ViewReplaceMethodAdapter(methodVisitor);
+        if (!mWidget) {
+            return methodVisitor == null ? null : new ViewReplaceMethodAdapter(methodVisitor);
+        }
+        return methodVisitor;
     }
 
     public class ViewReplaceMethodAdapter extends MethodVisitor {
@@ -42,13 +55,8 @@ public class NewViewReplaceVisitor extends ClassVisitor {
         @Override
         public void visitTypeInsn(int opcode, String type) {
             if (opcode == Opcodes.NEW) {
-                int index = type.lastIndexOf("/");
-                String simpleType = type;
-                if (index != -1) {
-                    simpleType = simpleType.substring(index + 1);
-                }
 
-                String wholeViewName = ReplaceNewViewUtils.sNeedReplaceViews.get(simpleType);
+                String wholeViewName = ReplaceNewViewUtils.sNeedReplaceViews.get(type);
                 if (wholeViewName != null) {
                     super.visitTypeInsn(opcode, wholeViewName);
                 } else {
@@ -62,12 +70,7 @@ public class NewViewReplaceVisitor extends ClassVisitor {
         @Override
         public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
             if (opcode == Opcodes.INVOKESPECIAL) {
-                int index = owner.lastIndexOf("/");
-                String simpleType = owner;
-                if (index != -1) {
-                    simpleType = simpleType.substring(index + 1);
-                }
-                String wholeViewName = ReplaceNewViewUtils.sNeedReplaceViews.get(simpleType);
+                String wholeViewName = ReplaceNewViewUtils.sNeedReplaceViews.get(owner);
                 if (wholeViewName != null && name.equals("<init>")) {
                     super.visitMethodInsn(opcode, wholeViewName, name, desc, itf);
                 } else {
