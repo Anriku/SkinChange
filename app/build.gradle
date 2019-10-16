@@ -31,4 +31,6 @@ dependencies {
 
 skinChangeExtension {
     projects = ['app', 'skinchangelib']
+    isUseAndroidX = true
+    skinsPath = ['night']
 }

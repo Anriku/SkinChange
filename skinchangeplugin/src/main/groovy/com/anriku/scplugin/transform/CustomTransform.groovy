@@ -9,6 +9,7 @@ import com.android.build.api.transform.TransformInput
 import com.android.build.api.transform.TransformInvocation
 import com.android.build.api.transform.TransformOutputProvider
 import com.android.build.gradle.internal.pipeline.TransformManager
+import com.anriku.scplugin.utils.PackageNameUtils
 import com.anriku.scplugin.utils.SkinChangeUtils
 import com.anriku.scplugin.extension.SkinChangeExtension
 
@@ -43,6 +44,7 @@ class CustomTransform extends Transform {
 
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
+        PackageNameUtils.setCompatibleType(skinChangeExtension.isUseAndroidX)
         Collection<TransformInput> inputs = transformInvocation.inputs
         TransformOutputProvider outputProvider = transformInvocation.outputProvider
 

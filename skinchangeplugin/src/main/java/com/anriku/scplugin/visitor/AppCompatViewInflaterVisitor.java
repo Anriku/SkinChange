@@ -1,5 +1,7 @@
 package com.anriku.scplugin.visitor;
 
+import com.anriku.scplugin.utils.Constants;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -14,9 +16,6 @@ import java.io.File;
 
 public class AppCompatViewInflaterVisitor extends ClassVisitor {
 
-    // AppCompatViewInflaterUtils的全限定名
-    public static final String APPCOMPAT_VIEW_INFLATER_UTILS = "com/anriku/sclib/utils/CreateViewUtils";
-    public static final String PACKAGE_NAME = "com.anriku.sclib.widget";
 
     public static byte[] getHandleBytes(byte[] originBytes) {
         ClassReader reader = new ClassReader(originBytes);
@@ -36,7 +35,7 @@ public class AppCompatViewInflaterVisitor extends ClassVisitor {
         if (methodVisitor == null) {
             return null;
         }
-        String prefix = PACKAGE_NAME.replace(".", "/") + File.separator + "SC";
+        String prefix = Constants.WIDGET_PACKAGE_NAME.replace(".", "/") + File.separator + "SC";
 
         switch (name) {
             case "createTextView":
@@ -90,7 +89,7 @@ public class AppCompatViewInflaterVisitor extends ClassVisitor {
                 mv.visitVarInsn(Opcodes.ALOAD, 1);
                 mv.visitVarInsn(Opcodes.ALOAD, 2);
                 mv.visitVarInsn(Opcodes.ALOAD, 3);
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, APPCOMPAT_VIEW_INFLATER_UTILS, "createView", "(Landroid/content/Context;Ljava/lang/String;Landroid/util/AttributeSet;)Landroid/view/View;", false);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, Constants.APPCOMPAT_VIEW_INFLATER_UTILS, "createView", "(Landroid/content/Context;Ljava/lang/String;Landroid/util/AttributeSet;)Landroid/view/View;", false);
             } else {
                 super.visitInsn(opcode);
             }

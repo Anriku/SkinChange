@@ -18,14 +18,19 @@ import java.util.Queue;
 public class ResUtils {
     public static final String SP_NAME = "SkinChange";
     public static final String KEY = "skin_name";
-    private static String sSkinSuffix = "_night";
+    private static String sSkinSuffix = "_" + MD5Utils.md5Hex("night");
 
     /**
      * 该方法应该在Application中进行初始化调用
      */
     public static void init(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("SkinChange", 0);
-        sSkinSuffix = sharedPreferences.getString("skin_name", "");
+        String skinName = sharedPreferences.getString("skin_name", "");
+        if (!skinName.isEmpty()) {
+            sSkinSuffix = MD5Utils.md5Hex(skinName);
+        } else {
+            sSkinSuffix = "";
+        }
     }
 
     /**
@@ -36,7 +41,7 @@ public class ResUtils {
             sSkinSuffix = "";
             skinName = "";
         } else {
-            skinName = "_" + skinName;
+            sSkinSuffix = "_" + MD5Utils.md5Hex(skinName);
         }
 
         Editor editor = context.getSharedPreferences("SkinChange", 0).edit();

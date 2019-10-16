@@ -17,6 +17,7 @@ dependencies {
     implementation group: 'org.ow2.asm', name: 'asm', version: '6.0'
     implementation group: 'org.ow2.asm', name: 'asm-commons', version: '6.0'
     implementation 'com.android.tools.build:gradle:3.2.1'
+    implementation 'dom4j:dom4j:1.6.1'
 }
 // maven预定的发布插件的Task
 uploadArchives {
