@@ -31,3 +31,24 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
+
+ext {
+    bintrayRepo = 'skinchange'
+    bintrayName = 'skinchangelib' // 发布到JCenter上的项目名字
+    publishedGroupId = 'com.anriku' // 函数库的Maven Group ID
+    libraryName = 'skinchangelib' // 函数库名字
+    artifact = 'skinchangelib' // 构件的名字
+    libraryDescription = 'This is a lib to achieve android skin change' //函数库的描述
+    siteUrl = 'https://github.com/Anriku/SkinChange' //定义函数库的主页
+    gitUrl = 'https://github.com/Anriku/SkinChange.git' //定义函数库的Gi thub仓库地址
+    libraryVersion = '1.0.0' // 函数库的版本号
+    developerId = 'anriku'
+    developerName = 'anriku'
+    developerEmail = 'anriku@qq.com'
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: "../install.gradle"
+apply from: "../bintray.gradle"

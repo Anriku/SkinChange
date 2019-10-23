@@ -1,14 +1,14 @@
 plugins {
     id 'groovy'
     // maven插件用于将上传插件，这里我们进行的是本地插件的部署
-    id 'maven'
+//    id 'maven'
     id 'java'
 }
 
 // 插件的classpath将会由下面的参数决定。下面组成的classpath将是com.anriku:standaloneplugin:1.0
-group 'com.anriku'
-version '1.0'
-archivesBaseName = 'skinchangeplugin'
+//group 'com.anriku'
+//version '1.0'
+//archivesBaseName = 'skinchangeplugin'
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -19,11 +19,32 @@ dependencies {
     implementation 'com.android.tools.build:gradle:3.2.1'
     implementation 'dom4j:dom4j:1.6.1'
 }
-// maven预定的发布插件的Task
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "file://$projectDir/../repo")
-        }
-    }
+//// maven预定的发布插件的Task
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            repository(url: "file://$projectDir/../repo")
+//        }
+//    }
+//}
+
+ext {
+    bintrayRepo = 'skinchange'
+    bintrayName = 'skinchangeplugin' // 发布到JCenter上的项目名字
+    publishedGroupId = 'com.anriku' // 函数库的Maven Group ID
+    libraryName = 'skinchangeplugin' // 函数库名字
+    artifact = 'skinchangeplugin' // 构件的名字
+    libraryDescription = 'This is a gradle plugin to achieve android skin change' //函数库的描述
+    siteUrl = 'https://github.com/Anriku/SkinChange' //定义函数库的主页
+    gitUrl = 'https://github.com/Anriku/SkinChange.git' //定义函数库的Gi thub仓库地址
+    libraryVersion = '1.0.0' // 函数库的版本号
+    developerId = 'anriku'
+    developerName = 'anriku'
+    developerEmail = 'anriku@qq.com'
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
 }
+
+apply from: "../install.gradle"
+apply from: "../bintray.gradle"
