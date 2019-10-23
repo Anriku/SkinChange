@@ -1,35 +1,43 @@
-apply plugin: 'com.android.application'
-apply plugin: 'skinchangeplugin'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 28
+
+
     defaultConfig {
-        applicationId "com.anriku.skinchange"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation project(':skinchange')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
 
-skinChangeExtension {
-    isUseAndroidX = true
-    skinsPath = ['night']
+ext {
+    bintrayName = 'skinchange' // 发布到JCenter上的项目名字
+    libraryName = 'skinchange' // 函数库名字
+    artifact = 'skinchange' // 构件的名字
+    libraryDescription = 'This library is used to add skinchange function to your app easily' //函数库的描述
 }
+
+apply from: "../install.gradle"
+apply from: "../bintray.gradle"

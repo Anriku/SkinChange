@@ -9,8 +9,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/skinchangelib" />
-            <option value="$PROJECT_DIR$/skinchangeplugin" />
+            <option value="$PROJECT_DIR$/skinchange" />
+            <option value="$PROJECT_DIR$/skinchange-plugin" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

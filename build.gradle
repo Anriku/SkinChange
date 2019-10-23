@@ -29,3 +29,19 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+// 所有需要上传到jcenter的库公共属性
+ext {
+    bintrayRepo = 'skinchange'
+    publishedGroupId = 'com.anriku' // 函数库的Maven Group ID
+
+    siteUrl = 'https://github.com/Anriku/SkinChange' //定义函数库的主页
+    gitUrl = 'https://github.com/Anriku/SkinChange.git' //定义函数库的Gi thub仓库地址
+    libraryVersion = '1.0.0-beta01' // 函数库的版本号
+    developerId = 'anriku'
+    developerName = 'anriku'
+    developerEmail = 'anriku@qq.com'
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}

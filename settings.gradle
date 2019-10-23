@@ -1,2 +1,2 @@
-include ':app', ':skinchangeplugin', ':skinchangelib'
+include ':app', ':skinchange-plugin', ':skinchange'
 rootProject.name='SkinChange'
