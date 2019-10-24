@@ -1,4 +1,4 @@
-package com.anriku.sclib.utils;
+package com.anriku.sclib.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -38,7 +38,7 @@ import com.anriku.sclib.widget.SCToggleButton;
  */
 
 
-public class ViewInflaterUtils {
+public class ViewInflater {
 
     public static View createView(Context context, String name, AttributeSet attrs) {
         View view;

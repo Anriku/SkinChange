@@ -2,11 +2,13 @@ package com.anriku.sclib.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.widget.Spinner;
 
 import com.anriku.sclib.annotation.HelperClassToMethod;
 import com.anriku.sclib.annotation.InitConstructor;
+import com.anriku.sclib.annotation.Method;
 import com.anriku.sclib.annotation.SkinChangeView;
 import com.anriku.sclib.helpers.SCBackgroundHelper;
 
@@ -19,16 +21,24 @@ import com.anriku.sclib.helpers.SCBackgroundHelper;
 @SkinChangeView(helperClassToMethodName = {
         @HelperClassToMethod(
                 helperClass = SCBackgroundHelper.class,
-                methodNameAndDescriptor = {"setBackgroundResource", "(I)V"},
+                method = @Method(
+                        name = "setBackgroundResource",
+                        desc = "(I)V"
+                ),
                 parameterIndexes = {0})
 }, initConstructors = {
         @InitConstructor(
-                constructorDescriptor = "(Landroid/content/Context;Landroid/util/AttributeSet;II)V",
+                constructor = @Method(
+                        name = "<init>",
+                        desc = "(Landroid/content/Context;Landroid/util/AttributeSet;IIILandroid/content/res/Resources$Theme;)V"
+                ),
                 attrsIndex = 1,
-                defStyleAttrIndex = 2
+                defStyleAttrIndex = 2,
+                defStyleResIndex = 3
         )
 })
 public class SCSpinner extends Spinner implements SkinChange {
+
     public SCSpinner(Context context) {
         this(context, null);
     }
@@ -42,11 +52,20 @@ public class SCSpinner extends Spinner implements SkinChange {
     }
 
     public SCSpinner(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, -1);
+        this(context, attrs, defStyleAttr, 0, -1);
     }
 
     public SCSpinner(Context context, AttributeSet attrs, int defStyleAttr, int mode) {
-        super(context, attrs, defStyleAttr, mode);
+        this(context, attrs, defStyleAttr, 0, mode);
+    }
+
+    public SCSpinner(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes, int mode) {
+        this(context, attrs, defStyleAttr, defStyleRes, mode, null);
+    }
+
+    @SuppressLint("NewApi")
+    public SCSpinner(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes, int mode, Resources.Theme popupTheme) {
+        super(context, attrs, defStyleAttr, defStyleRes, mode, popupTheme);
     }
 
     @Override

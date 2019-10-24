@@ -1,9 +1,9 @@
 package com.anriku.sclib.widget;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.CheckBox;
+
+import androidx.appcompat.widget.AppCompatRadioButton;
 
 import com.anriku.sclib.annotation.HelperClassToMethod;
 import com.anriku.sclib.annotation.InitConstructor;
@@ -16,10 +16,8 @@ import com.anriku.sclib.helpers.SCRelativeCompoundDrawablesHelper;
 import com.anriku.sclib.helpers.SCTextAppearanceHelper;
 
 /**
- * Created by anriku on 2019-10-12.
+ * Created by anriku on 2019-10-08.
  */
-
-@SuppressLint("AppCompatCustomView")
 @SkinChangeView(helperClassToMethodName = {
         @HelperClassToMethod(
                 helperClass = SCTextAppearanceHelper.class,
@@ -55,35 +53,37 @@ import com.anriku.sclib.helpers.SCTextAppearanceHelper;
                         name = "setBackgroundResource",
                         desc = "(I)V"
                 ),
+                parameterIndexes = {0}),
+        @HelperClassToMethod(
+                helperClass = SCButtonHelper.class,
+                method = @Method(
+                        name = "setButtonDrawable",
+                        desc = "(I)V"
+                ),
                 parameterIndexes = {0})
 }, initConstructors = {
         @InitConstructor(
                 constructor = @Method(
                         name = "<init>",
-                        desc = "(Landroid/content/Context;Landroid/util/AttributeSet;II)V"
+                        desc = "(Landroid/content/Context;Landroid/util/AttributeSet;I)V"
                 ),
                 attrsIndex = 1,
-                defStyleAttrIndex = 2,
-                defStyleResIndex = 3
+                defStyleAttrIndex = 2
         )
 })
-public class SCCheckBox extends CheckBox implements SkinChange {
+public class SCAppCompatRadioButton extends AppCompatRadioButton implements SkinChange {
 
-    public SCCheckBox(Context context) {
+
+    public SCAppCompatRadioButton(Context context) {
         this(context, null);
     }
 
-    public SCCheckBox(Context context, AttributeSet attrs) {
-        this(context, attrs, android.R.attr.checkboxStyle);
+    public SCAppCompatRadioButton(Context context, AttributeSet attrs) {
+        this(context, attrs, android.R.attr.radioButtonStyle);
     }
 
-    public SCCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
-    }
-
-    @SuppressLint("NewApi")
-    public SCCheckBox(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+    public SCAppCompatRadioButton(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     @Override

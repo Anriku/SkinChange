@@ -19,12 +19,12 @@ public class SCBackgroundHelper extends SCHelper {
     }
 
     @Override
-    public void loadFromAttributes(AttributeSet attrs, int defStyleAttr) {
+    public void loadFromAttributes(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (mResIds == null) {
             mResIds = new int[1];
         }
         TypedArray a = mView.getContext().obtainStyledAttributes(attrs,
-                R.styleable.SCBackgroundHelper, defStyleAttr, 0);
+                R.styleable.SCBackgroundHelper, defStyleAttr, defStyleRes);
         try {
             mResIds[0] = a.getResourceId(R.styleable.SCBackgroundHelper_android_background, INVALID_ID);
         } finally {

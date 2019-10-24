@@ -1,10 +1,9 @@
 package com.anriku.sclib.widget;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 
+import androidx.appcompat.widget.AppCompatSeekBar;
 
 import com.anriku.sclib.annotation.HelperClassToMethod;
 import com.anriku.sclib.annotation.InitConstructor;
@@ -12,9 +11,8 @@ import com.anriku.sclib.annotation.Method;
 import com.anriku.sclib.annotation.SkinChangeView;
 import com.anriku.sclib.helpers.SCBackgroundHelper;
 
-
 /**
- * Created by anriku on 2019-10-05.
+ * Created by anriku on 2019-10-08.
  */
 @SkinChangeView(helperClassToMethodName = {
         @HelperClassToMethod(
@@ -28,30 +26,25 @@ import com.anriku.sclib.helpers.SCBackgroundHelper;
         @InitConstructor(
                 constructor = @Method(
                         name = "<init>",
-                        desc = "(Landroid/content/Context;Landroid/util/AttributeSet;II)V"
+                        desc = "(Landroid/content/Context;Landroid/util/AttributeSet;I)V"
                 ),
                 attrsIndex = 1,
-                defStyleAttrIndex = 2,
-                defStyleResIndex = 3
+                defStyleAttrIndex = 2
         )
 })
-public class SCView extends View implements SkinChange {
+public class SCAppCompatSeekBar extends AppCompatSeekBar implements SkinChange {
 
-    public SCView(Context context) {
-        super(context);
+
+    public SCAppCompatSeekBar(Context context) {
+        this(context, null);
     }
 
-    public SCView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    public SCAppCompatSeekBar(Context context, AttributeSet attrs) {
+        this(context, attrs, android.R.attr.seekBarStyle);
     }
 
-    public SCView(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
-    }
-
-    @SuppressLint("NewApi")
-    public SCView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+    public SCAppCompatSeekBar(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     @Override

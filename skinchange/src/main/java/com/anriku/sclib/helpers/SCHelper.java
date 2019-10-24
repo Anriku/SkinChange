@@ -18,7 +18,7 @@ public abstract class SCHelper {
         this.mView = mView;
     }
 
-    public abstract void loadFromAttributes(AttributeSet attrs, int defStyleAttr);
+    public abstract void loadFromAttributes(AttributeSet attrs, int defStyleAttr, int defStyleRes);
 
     /**
      * 用于记录并且替换成新的resIds。

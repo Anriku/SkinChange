@@ -20,11 +20,11 @@ public class SCTextAppearanceHelper extends SCHelper {
     }
 
     @Override
-    public void loadFromAttributes(AttributeSet attrs, int defStyleAttr) {
+    public void loadFromAttributes(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (mResIds == null) {
             mResIds = new int[1];
         }
-        TypedArray a = mView.getContext().obtainStyledAttributes(attrs, R.styleable.SCTextAppearanceHelper, defStyleAttr, 0);
+        TypedArray a = mView.getContext().obtainStyledAttributes(attrs, R.styleable.SCTextAppearanceHelper, defStyleAttr, defStyleRes);
         try {
             if (a.hasValue(R.styleable.SCTextAppearanceHelper_android_textAppearance)) {
                 mResIds[0] = a.getResourceId(

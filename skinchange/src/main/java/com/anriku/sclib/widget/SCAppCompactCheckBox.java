@@ -1,9 +1,9 @@
 package com.anriku.sclib.widget;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.CheckBox;
+
+import androidx.appcompat.widget.AppCompatCheckBox;
 
 import com.anriku.sclib.annotation.HelperClassToMethod;
 import com.anriku.sclib.annotation.InitConstructor;
@@ -16,10 +16,9 @@ import com.anriku.sclib.helpers.SCRelativeCompoundDrawablesHelper;
 import com.anriku.sclib.helpers.SCTextAppearanceHelper;
 
 /**
- * Created by anriku on 2019-10-12.
+ * Created by anriku on 2019-10-08.
  */
 
-@SuppressLint("AppCompatCustomView")
 @SkinChangeView(helperClassToMethodName = {
         @HelperClassToMethod(
                 helperClass = SCTextAppearanceHelper.class,
@@ -60,30 +59,24 @@ import com.anriku.sclib.helpers.SCTextAppearanceHelper;
         @InitConstructor(
                 constructor = @Method(
                         name = "<init>",
-                        desc = "(Landroid/content/Context;Landroid/util/AttributeSet;II)V"
+                        desc = "(Landroid/content/Context;Landroid/util/AttributeSet;I)V"
                 ),
                 attrsIndex = 1,
-                defStyleAttrIndex = 2,
-                defStyleResIndex = 3
+                defStyleAttrIndex = 2
         )
 })
-public class SCCheckBox extends CheckBox implements SkinChange {
+public class SCAppCompactCheckBox extends AppCompatCheckBox implements SkinChange {
 
-    public SCCheckBox(Context context) {
+    public SCAppCompactCheckBox(Context context) {
         this(context, null);
     }
 
-    public SCCheckBox(Context context, AttributeSet attrs) {
+    public SCAppCompactCheckBox(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.checkboxStyle);
     }
 
-    public SCCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
-    }
-
-    @SuppressLint("NewApi")
-    public SCCheckBox(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+    public SCAppCompactCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     @Override

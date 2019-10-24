@@ -18,13 +18,13 @@ public class SCImageHelper extends SCHelper {
     }
 
     @Override
-    public void loadFromAttributes(AttributeSet attrs, int defStyleAttr) {
+    public void loadFromAttributes(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (mResIds == null) {
             mResIds = new int[1];
         }
         TypedArray a = null;
         try {
-            a = mView.getContext().obtainStyledAttributes(attrs, R.styleable.SCImageHelper, defStyleAttr, 0);
+            a = mView.getContext().obtainStyledAttributes(attrs, R.styleable.SCImageHelper, defStyleAttr, defStyleRes);
             mResIds[0] = a.getResourceId(R.styleable.SCImageHelper_android_src, INVALID_ID);
         } finally {
             if (a != null) {

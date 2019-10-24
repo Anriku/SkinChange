@@ -19,12 +19,12 @@ public class SCButtonHelper extends SCHelper {
     }
 
     @Override
-    public void loadFromAttributes(AttributeSet attrs, int defStyleAttr) {
+    public void loadFromAttributes(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (mResIds == null) {
             mResIds = new int[1];
         }
         TypedArray a = mView.getContext().obtainStyledAttributes(attrs,
-                R.styleable.SCButtonHelper, defStyleAttr, 0);
+                R.styleable.SCButtonHelper, defStyleAttr, defStyleRes);
         try {
             mResIds[0] = a.getResourceId(R.styleable.SCButtonHelper_android_button, INVALID_ID);
         } finally {

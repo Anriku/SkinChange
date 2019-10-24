@@ -19,12 +19,12 @@ public class SCCompoundDrawablesHelper extends SCHelper {
     }
 
     @Override
-    public void loadFromAttributes(AttributeSet attrs, int defStyleAttr) {
+    public void loadFromAttributes(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (mResIds == null) {
             mResIds = new int[4];
         }
         TypedArray a = mView.getContext().obtainStyledAttributes(attrs,
-                R.styleable.SCCompoundDrawablesHelper, defStyleAttr, 0);
+                R.styleable.SCCompoundDrawablesHelper, defStyleAttr, defStyleRes);
         try {
             mResIds[0] = a.getResourceId(R.styleable.SCCompoundDrawablesHelper_android_drawableLeft, INVALID_ID);
             mResIds[1] = a.getResourceId(R.styleable.SCCompoundDrawablesHelper_android_drawableTop, INVALID_ID);

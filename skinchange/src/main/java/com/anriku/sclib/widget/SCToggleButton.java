@@ -1,11 +1,13 @@
 package com.anriku.sclib.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ToggleButton;
 
 import com.anriku.sclib.annotation.HelperClassToMethod;
 import com.anriku.sclib.annotation.InitConstructor;
+import com.anriku.sclib.annotation.Method;
 import com.anriku.sclib.annotation.SkinChangeView;
 import com.anriku.sclib.helpers.SCBackgroundHelper;
 import com.anriku.sclib.helpers.SCCompoundDrawablesHelper;
@@ -18,39 +20,63 @@ import com.anriku.sclib.helpers.SCTextAppearanceHelper;
 @SkinChangeView(helperClassToMethodName = {
         @HelperClassToMethod(
                 helperClass = SCTextAppearanceHelper.class,
-                methodNameAndDescriptor = {"setTextAppearance", "(I)V"},
+                method = @Method(
+                        name = "setTextAppearance",
+                        desc = "(I)V"
+                ),
                 parameterIndexes = {0}),
         @HelperClassToMethod(
                 helperClass = SCTextAppearanceHelper.class,
-                methodNameAndDescriptor = {"setTextAppearance", "(Landroid/content/Context;I)V"},
+                method = @Method(
+                        name = "setTextAppearance",
+                        desc = "(Landroid/content/Context;I)V"
+                ),
                 parameterIndexes = {1}),
         @HelperClassToMethod(
                 helperClass = SCRelativeCompoundDrawablesHelper.class,
-                methodNameAndDescriptor = {"setCompoundDrawablesRelativeWithIntrinsicBounds", "(IIII)V"},
+                method = @Method(
+                        name = "setCompoundDrawablesRelativeWithIntrinsicBounds",
+                        desc = "(IIII)V"
+                ),
                 parameterIndexes = {0, 1, 2, 3}),
         @HelperClassToMethod(
                 helperClass = SCCompoundDrawablesHelper.class,
-                methodNameAndDescriptor = {"setCompoundDrawablesWithIntrinsicBounds", "(IIII)V"},
+                method = @Method(
+                        name = "setCompoundDrawablesWithIntrinsicBounds",
+                        desc = "(IIII)V"
+                ),
                 parameterIndexes = {0, 1, 2, 3}),
         @HelperClassToMethod(
                 helperClass = SCBackgroundHelper.class,
-                methodNameAndDescriptor = {"setBackgroundResource", "(I)V"},
+                method = @Method(
+                        name = "setBackgroundResource",
+                        desc = "(I)V"
+                ),
                 parameterIndexes = {0})
 }, initConstructors = {
         @InitConstructor(
-                constructorDescriptor = "(Landroid/content/Context;Landroid/util/AttributeSet;I)V",
+                constructor = @Method(
+                        name = "<init>",
+                        desc = "(Landroid/content/Context;Landroid/util/AttributeSet;II)V"
+                ),
                 attrsIndex = 1,
-                defStyleAttrIndex = 2
+                defStyleAttrIndex = 2,
+                defStyleResIndex = 3
         )
 })
 public class SCToggleButton extends ToggleButton implements SkinChange {
 
-    public SCToggleButton(Context context, AttributeSet attrs) {
-        this(context, attrs, android.R.attr.buttonStyleToggle);
+    @SuppressLint("NewApi")
+    public SCToggleButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     public SCToggleButton(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    public SCToggleButton(Context context, AttributeSet attrs) {
+        this(context, attrs, android.R.attr.buttonStyleToggle);
     }
 
     public SCToggleButton(Context context) {

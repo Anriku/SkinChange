@@ -25,7 +25,7 @@ import com.anriku.scplugin.extension.SkinChangeExtension
 import com.anriku.scplugin.visitor.ActivityVisitor
 import com.anriku.scplugin.visitor.AppCompatViewInflaterVisitor
 import com.anriku.scplugin.visitor.ReplaceNewViewVisitor
-import com.anriku.scplugin.visitor.SkinChangeViewVisitor
+import com.anriku.scplugin.visitor.skinchangeviewannotation.SkinChangeViewVisitor
 import com.anriku.scplugin.visitor.RModifyVisitor
 import com.anriku.scplugin.visitor.ResUtilsVisitor
 
@@ -207,55 +207,55 @@ class SkinChangeUtils {
         FileUtils.copyDirectory(directoryInput.file, dest)
     }
 
-    /**
-     * 生成所有的AppCompat相关的View的继承类
-     */
-    void dumpAppCompatFiles(DirectoryInput directoryInput, TransformOutputProvider outputProvider) {
-        def appCompatFilesPath = directoryInput.file.getAbsolutePath() + File.separator + PackageNameUtils.sViewPackageName.replace(".", File.separator)
-        def appCompatFilesFile = new File(appCompatFilesPath)
-        if (!appCompatFilesFile.exists()) {
-            appCompatFilesFile.mkdirs()
-        }
-
-        def appCompatClasses = new ArrayList<>()
-        appCompatClasses.add(SCAppCompatAutoCompleteTextViewDump.class)
-        appCompatClasses.add(SCAppCompatButtonDump.class)
-        appCompatClasses.add(SCAppCompatCheckBoxDump.class)
-        appCompatClasses.add(SCAppCompatCheckedTextViewDump.class)
-        appCompatClasses.add(SCAppCompatEditTextDump.class)
-        appCompatClasses.add(SCAppCompatImageButtonDump.class)
-        appCompatClasses.add(SCAppCompatImageViewDump.class)
-        appCompatClasses.add(SCAppCompatRadioButtonDump.class)
-        appCompatClasses.add(SCAppCompatRatingBarDump.class)
-        appCompatClasses.add(SCAppCompatSeekBarDump.class)
-        appCompatClasses.add(SCAppCompatSpinnerDump.class)
-        appCompatClasses.add(SCAppCompatTextViewDump.class)
-        appCompatClasses.add(SCAppCompatToggleButtonDump.class)
-        appCompatClasses.add(SCCompatMultiAutoCompleteTextViewDump.class)
-        appCompatClasses.add(CreateViewUtilsDump.class)
-
-        int size = appCompatClasses.size()
-        for (int i = 0; i < size; i++) {
-            def appCompatClass = appCompatClasses.get(i)
-            try {
-                def method = appCompatClass.getMethod("dump")
-                if (method != null) {
-                    byte[] bytes = method.invoke(null)
-                    dumpFile(bytes, appCompatFilesPath + File.separator + appCompatClass.getSimpleName() + ".class")
-                }
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace()
-            } catch (IllegalAccessException e) {
-                e.printStackTrace()
-            } catch (InvocationTargetException e) {
-                e.printStackTrace()
-            }
-        }
-
-        def dest = outputProvider.getContentLocation(directoryInput.name,
-                directoryInput.contentTypes, directoryInput.scopes,
-                Format.DIRECTORY)
-        FileUtils.copyDirectory(directoryInput.file, dest)
-    }
+//    /**
+//     * 生成所有的AppCompat相关的View的继承类
+//     */
+//    void dumpAppCompatFiles(DirectoryInput directoryInput, TransformOutputProvider outputProvider) {
+//        def appCompatFilesPath = directoryInput.file.getAbsolutePath() + File.separator + PackageNameUtils.sViewPackageName.replace(".", File.separator)
+//        def appCompatFilesFile = new File(appCompatFilesPath)
+//        if (!appCompatFilesFile.exists()) {
+//            appCompatFilesFile.mkdirs()
+//        }
+//
+//        def appCompatClasses = new ArrayList<>()
+//        appCompatClasses.add(SCAppCompatAutoCompleteTextViewDump.class)
+//        appCompatClasses.add(SCAppCompatButtonDump.class)
+//        appCompatClasses.add(SCAppCompatCheckBoxDump.class)
+//        appCompatClasses.add(SCAppCompatCheckedTextViewDump.class)
+//        appCompatClasses.add(SCAppCompatEditTextDump.class)
+//        appCompatClasses.add(SCAppCompatImageButtonDump.class)
+//        appCompatClasses.add(SCAppCompatImageViewDump.class)
+//        appCompatClasses.add(SCAppCompatRadioButtonDump.class)
+//        appCompatClasses.add(SCAppCompatRatingBarDump.class)
+//        appCompatClasses.add(SCAppCompatSeekBarDump.class)
+//        appCompatClasses.add(SCAppCompatSpinnerDump.class)
+//        appCompatClasses.add(SCAppCompatTextViewDump.class)
+//        appCompatClasses.add(SCAppCompatToggleButtonDump.class)
+//        appCompatClasses.add(SCCompatMultiAutoCompleteTextViewDump.class)
+//        appCompatClasses.add(CreateViewUtilsDump.class)
+//
+//        int size = appCompatClasses.size()
+//        for (int i = 0; i < size; i++) {
+//            def appCompatClass = appCompatClasses.get(i)
+//            try {
+//                def method = appCompatClass.getMethod("dump")
+//                if (method != null) {
+//                    byte[] bytes = method.invoke(null)
+//                    dumpFile(bytes, appCompatFilesPath + File.separator + appCompatClass.getSimpleName() + ".class")
+//                }
+//            } catch (NoSuchMethodException e) {
+//                e.printStackTrace()
+//            } catch (IllegalAccessException e) {
+//                e.printStackTrace()
+//            } catch (InvocationTargetException e) {
+//                e.printStackTrace()
+//            }
+//        }
+//
+//        def dest = outputProvider.getContentLocation(directoryInput.name,
+//                directoryInput.contentTypes, directoryInput.scopes,
+//                Format.DIRECTORY)
+//        FileUtils.copyDirectory(directoryInput.file, dest)
+//    }
 
 }

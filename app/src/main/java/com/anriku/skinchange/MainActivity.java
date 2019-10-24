@@ -8,8 +8,13 @@ import android.widget.TextView;
 
 
 import com.anriku.sclib.utils.ResUtils;
+import com.anriku.sclib.widget.SCAutoCompleteTextView;
 
 public class MainActivity extends Activity {
+
+    public static void main(String[] args) {
+        Class c = SCAutoCompleteTextView.class;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
